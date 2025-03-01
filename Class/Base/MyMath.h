@@ -57,3 +57,12 @@ Matrix3x3 MakeViewportMatrix(float left, float top, float width, float height);
 Matrix3x3 MakeWvpVpMatrix(Matrix3x3 worldMatrix, Matrix3x3 viewMatrix, Matrix3x3 orthoMatrix, Matrix3x3 viewportMatrix);
 
 void VectorScreenPrintf(int x, int y, Vector3 vector3,const char* str);
+
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* str);
+
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+Matrix4x4 Inverse(const Matrix4x4& m);
+Matrix4x4 Transpose(const Matrix4x4& m);
+Matrix4x4 MakeIdentity4x4();

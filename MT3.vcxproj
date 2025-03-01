@@ -120,7 +120,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\base\StringUtility.h" />
-    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector2.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector3.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
@@ -150,6 +149,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Class\Base\MyMath\MathInclude.h" />
     <ClInclude Include="Class\Base\MyMath\Matrix2x2.h" />
     <ClInclude Include="Class\Base\MyMath\Matrix3x3.h" />
+    <ClInclude Include="Class\Base\MyMath\Matrix4x4.h" />
     <ClInclude Include="Class\Base\MyMath\Transform.h" />
     <ClInclude Include="Class\Base\MyMath\Vector2.h" />
     <ClInclude Include="Class\Base\MyMath\Vector3.h" />

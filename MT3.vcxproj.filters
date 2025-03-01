@@ -106,7 +106,6 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\3d\SpotLight.h">
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
-    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector2.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector3.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
@@ -121,5 +120,6 @@
     <ClInclude Include="Class\Base\MyMath\Transform.h" />
     <ClInclude Include="Class\Base\MyMath\Vector2.h" />
     <ClInclude Include="Class\Base\MyMath\Vector3.h" />
+    <ClInclude Include="Class\Base\MyMath\Matrix4x4.h" />
   </ItemGroup>
 </Project>
