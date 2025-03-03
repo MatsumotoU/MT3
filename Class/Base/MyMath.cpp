@@ -3,42 +3,42 @@
 #include <math.h>
 
 float Dot(Vector2 a, Vector2 b) {
-    return a.x * b.x + a.y * b.y;
+	return a.x * b.x + a.y * b.y;
 }
 
 float Cross(Vector2 a, Vector2 b) {
-    return a.x * b.y - a.y * b.x;
+	return a.x * b.y - a.y * b.x;
 }
 
 unsigned int ColorFade(unsigned int color, float alpha) {
 
-    unsigned int maskColor = 0xFFFFFF00 & color;
-    
+	unsigned int maskColor = 0xFFFFFF00 & color;
 
-    return maskColor | static_cast<int>(alpha * 255);;
+
+	return maskColor | static_cast<int>(alpha * 255);;
 }
 
 float Length(Vector2 a) {
-    return sqrtf(powf(a.x, 2.0f) + powf(a.y, 2.0f));
+	return sqrtf(powf(a.x, 2.0f) + powf(a.y, 2.0f));
 }
 
 float Length(Vector3 vector3) {
-	return sqrtf(Dot(vector3,vector3));
+	return sqrtf(Dot(vector3, vector3));
 }
 
 Vector2 Normalize(Vector2 setVec) {
-    Vector2 vec = setVec;
-    
-    if (Length(vec) == 0.0f) {
-        return vec;
-    }
+	Vector2 vec = setVec;
 
-    vec = {
-        setVec.x / Length(vec),
-        setVec.y / Length(vec)
-    };
+	if (Length(vec) == 0.0f) {
+		return vec;
+	}
 
-    return vec;
+	vec = {
+		setVec.x / Length(vec),
+		setVec.y / Length(vec)
+	};
+
+	return vec;
 }
 
 float Dot(Vector3 a, Vector3 b) {
@@ -60,26 +60,26 @@ int reClamp(int t, int min, int max) {
 }
 
 Vector2 RotatePos(Vector2 anker, float angle, float length) {
-    Vector2 result;
-    result.x = anker.x + (cosf(angle) - sinf(angle)) * length;
-    result.x = anker.x + (cosf(angle) + sinf(angle)) * length;
+	Vector2 result;
+	result.x = anker.x + (cosf(angle) - sinf(angle)) * length;
+	result.x = anker.x + (cosf(angle) + sinf(angle)) * length;
 
-    return result;
+	return result;
 }
 
 int ScopeVar(int var, int min, int max) {
 
-    if (var >= min && var <= max) {
-        return true;
-    } else {
-        return false;
-    }
+	if (var >= min && var <= max) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 unsigned int FadeColor(unsigned int color, float alpha) {
 
-    unsigned int rgbColor = color & 0xFFFFFF00;
-    return  rgbColor|static_cast<int>(alpha * 255);
+	unsigned int rgbColor = color & 0xFFFFFF00;
+	return  rgbColor | static_cast<int>(alpha * 255);
 }
 
 Matrix3x3 MakeScaleMatrix(Vector2 scale) {
@@ -111,7 +111,7 @@ Matrix3x3 MakeTranslateMatrix(Vector2 translate) {
 	return result;
 }
 
-Vector2 BezierCurve(Vector2 a, Vector2 b, Vector2 c,float pow, float t) {
+Vector2 BezierCurve(Vector2 a, Vector2 b, Vector2 c, float pow, float t) {
 	Vector2 result = { 0 };
 	ptrClamp(&t, 0.0f, 1.0f);
 
@@ -220,7 +220,7 @@ Matrix3x3 Transpose(Matrix3x3 matrix) {
 
 Matrix3x3 MakeOrthographicMatrix(float left, float top, float right, float bottom) {
 
-	Matrix3x3 result = {0};
+	Matrix3x3 result = { 0 };
 
 	if (left - right == 0.0f || top - bottom == 0.0f || right - left == 0.0f || bottom - top == 0.0f) {
 		return result;
@@ -240,7 +240,7 @@ Matrix3x3 MakeViewportMatrix(float left, float top, float width, float height) {
 	Matrix3x3 result = { 0 };
 
 	result.m[0][0] = width / 2.0f;
-	result.m[1][1] = -height /2.0f;
+	result.m[1][1] = -height / 2.0f;
 
 	result.m[2][0] = left + (width / 2.0f);
 	result.m[2][1] = top + (height / 2.0f);
@@ -260,7 +260,7 @@ Matrix3x3 MakeWvpVpMatrix(Matrix3x3 worldMatrix, Matrix3x3 viewMatrix, Matrix3x3
 }
 
 void VectorScreenPrintf(int x, int y, Vector3 vector3, const char* str) {
-	Novice::ScreenPrintf(x, y, "%.2f %.2f %.2f %s", vector3.x, vector3.y, vector3.z,str);
+	Novice::ScreenPrintf(x, y, "%.2f %.2f %.2f %s", vector3.x, vector3.y, vector3.z, str);
 }
 
 Matrix3x3 MakeAffineMatrix(Vector2 scale, float rotate, Vector2 translate) {
@@ -282,7 +282,7 @@ Matrix3x3 MakeAffineMatrix(Vector2 scale, float rotate, Vector2 translate) {
 }
 
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* str) {
-	Novice::ScreenPrintf(x ,y,str);
+	Novice::ScreenPrintf(x, y, str);
 	for (int row = 0; row < 4; ++row) {
 		for (int column = 0; column < 4; ++column) {
 			Novice::ScreenPrintf(x + column * 64, y + (row + 1) * 20,
@@ -327,7 +327,7 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 	Matrix4x4 result = {};
 
 	float i =
-		+ m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3]
+		+m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3]
 		+ m.m[0][0] * m.m[1][2] * m.m[2][3] * m.m[3][1]
 		+ m.m[0][0] * m.m[1][3] * m.m[2][1] * m.m[3][2]
 
@@ -520,5 +520,40 @@ Matrix4x4 MakeIdentity4x4() {
 			}
 		}
 	}
+	return result;
+}
+
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[3][0] = translate.x;
+	result.m[3][1] = translate.y;
+	result.m[3][2] = translate.z;
+
+	return result;
+}
+
+Matrix4x4 MakeScaleMatrix(const Vector3& translate) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = translate.x;
+	result.m[1][1] = translate.y;
+	result.m[2][2] = translate.z;
+
+	return result;
+}
+
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector3 result = {};
+
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
+	if (w == 0.0f) {
+		assert(false);
+	}
+
+	result.x = (vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0]) / w;
+	result.y = (vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1]) / w;
+	result.z = (vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2]) / w;
+
 	return result;
 }
