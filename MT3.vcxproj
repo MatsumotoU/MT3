@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -115,8 +115,13 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\TextureManager.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
-    <ClCompile Include="Class\Base\MyMath.cpp" />
-    <ClCompile Include="Class\Base\MyMath\Vector4.cpp" />
+    <ClCompile Include="Class\Math\Matrix\Matrix2x2.cpp" />
+    <ClCompile Include="Class\Math\Matrix\Matrix3x3.cpp" />
+    <ClCompile Include="Class\Math\Matrix\Matrix4x4.cpp" />
+    <ClCompile Include="Class\Math\MyMath.cpp" />
+    <ClCompile Include="Class\Math\Vector\Vector2.cpp" />
+    <ClCompile Include="Class\Math\Vector\Vector3.cpp" />
+    <ClCompile Include="Class\Math\Vector\Vector4.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +160,15 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Class\Base\MyMath\Vector2.h" />
     <ClInclude Include="Class\Base\MyMath\Vector3.h" />
     <ClInclude Include="Class\Base\MyMath\Vector4.h" />
+    <ClInclude Include="Class\Math\MathInclude.h" />
+    <ClInclude Include="Class\Math\Matrix\Matrix2x2.h" />
+    <ClInclude Include="Class\Math\Matrix\Matrix3x3.h" />
+    <ClInclude Include="Class\Math\Matrix\Matrix4x4.h" />
+    <ClInclude Include="Class\Math\MyMath.h" />
+    <ClInclude Include="Class\Math\Transform.h" />
+    <ClInclude Include="Class\Math\Vector\Vector2.h" />
+    <ClInclude Include="Class\Math\Vector\Vector3.h" />
+    <ClInclude Include="Class\Math\Vector\Vector4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
