@@ -19,10 +19,10 @@ public:
 	Vector4 operator*=(const Vector4& other) { return { x *= other.x, y *= other.y, z *= other.z ,w *= other.w }; }
 	Vector4 operator/=(const Vector4& other) { return { x /= other.x, y /= other.y, z /= other.z ,w /= other.w }; }
 
-	Vector4 operator+(const float& other) { return { x + other,y + other,z + other , w + other}; };
-	Vector4 operator-(const float& other) { return { x - other,y - other,z - other , w - other }; };
-	Vector4 operator/(const float& other) { return { x / other,y / other,z / other , w / other }; };
-	Vector4 operator*(const float& other) { return { x * other,y * other,z * other , w * other }; };
+	Vector4 operator+(const float& other) const { return { x + other,y + other,z + other , w + other}; };
+	Vector4 operator-(const float& other) const { return { x - other,y - other,z - other , w - other }; };
+	Vector4 operator/(const float& other) const { return { x / other,y / other,z / other , w / other }; };
+	Vector4 operator*(const float& other) const { return { x * other,y * other,z * other , w * other }; };
 
 public:
 	/// <summary>

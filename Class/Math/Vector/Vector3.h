@@ -3,7 +3,7 @@
 // 前方宣言
 class Matrix4x4;
 
-class Vector3 final{
+class Vector3 final {
 public:
 	float x;
 	float y;
@@ -12,20 +12,20 @@ public:
 public:
 	Vector3 operator-()const { return { -x, -y, -z }; };
 
-	Vector3 operator+(const Vector3& other) { return { x + other.x, y + other.y, z + other.z }; }
-	Vector3 operator-(const Vector3& other) { return { x - other.x, y - other.y, z - other.z }; }
-	Vector3 operator*(const Vector3& other) { return { x * other.x, y * other.y, z * other.z }; }
-	Vector3 operator/(const Vector3& other) { return { x / other.x, y / other.y, z / other.z }; }
+	Vector3 operator+(const Vector3& other) const { return { x + other.x, y + other.y, z + other.z }; }
+	Vector3 operator-(const Vector3& other) const { return { x - other.x, y - other.y, z - other.z }; }
+	Vector3 operator*(const Vector3& other) const { return { x * other.x, y * other.y, z * other.z }; }
+	Vector3 operator/(const Vector3& other) const { return { x / other.x, y / other.y, z / other.z }; }
 	Vector3 operator=(const Vector3& other) { return { x = other.x, y = other.y, z = other.z }; }
 	Vector3 operator+=(const Vector3& other) { return { x += other.x, y += other.y, z += other.z }; }
 	Vector3 operator-=(const Vector3& other) { return { x -= other.x, y -= other.y, z -= other.z }; }
 	Vector3 operator*=(const Vector3& other) { return { x *= other.x, y *= other.y, z *= other.z }; }
 	Vector3 operator/=(const Vector3& other) { return { x /= other.x, y /= other.y, z /= other.z }; }
 
-	Vector3 operator+(const float& other) { return { x + other,y + other,z + other }; };
-	Vector3 operator-(const float& other) { return { x - other,y - other,z - other }; };
-	Vector3 operator/(const float& other) { return { x / other,y / other,z / other }; };
-	Vector3 operator*(const float& other) { return { x * other,y * other,z * other }; };
+	Vector3 operator+(const float& other) const { return { x + other,y + other,z + other }; };
+	Vector3 operator-(const float& other) const { return { x - other,y - other,z - other }; };
+	Vector3 operator/(const float& other) const { return { x / other,y / other,z / other }; };
+	Vector3 operator*(const float& other) const { return { x * other,y * other,z * other }; };
 
 public:
 	/// <summary>
@@ -53,8 +53,8 @@ public:
 	/// <summary>
 	/// ワールド座標に変換する
 	/// </summary>
-	/// <param name="vector"></param>
-	/// <param name="matrix"></param>
-	/// <returns></returns>
-	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+	/// <param name="vector">変換元ローカル座標</param>
+	/// <param name="matrix">変換に使用する行列</param>
+	/// <returns>ワールド座標</returns>
+	[[nodiscard]] Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 };

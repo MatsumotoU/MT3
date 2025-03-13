@@ -27,7 +27,6 @@ int ScopeVar(int var, int min, int max);
 Vector2 RotatePos(Vector2 anker, float angle, float length);
 
 Vector2 BezierCurve(Vector2 a, Vector2 b, Vector2 c, float pow,float t);
-Vector2 SplineInterpolation(Vector2 a, Vector2 b, Vector2 c, Vector2 d, float t);
 
 void MatrixScreenPrintf(int x, int y, Matrix2x2 matrix);
 void MatrixScreenPrintf(int x, int y, Matrix3x3 matrix);

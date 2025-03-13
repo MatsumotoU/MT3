@@ -7,20 +7,20 @@ public:
 public:
 	Vector2 operator-()const { return { -x,-y }; };
 
-	Vector2 operator+(const Vector2& other) { return { x + other.x, y + other.y }; }
-	Vector2 operator-(const Vector2& other) { return { x - other.x, y - other.y }; }
-	Vector2 operator*(const Vector2& other) { return { x * other.x, y * other.y }; }
-	Vector2 operator/(const Vector2& other) { return { x / other.x, y / other.y }; }
+	Vector2 operator+(const Vector2& other) const { return { x + other.x, y + other.y }; }
+	Vector2 operator-(const Vector2& other) const { return { x - other.x, y - other.y }; }
+	Vector2 operator*(const Vector2& other) const { return { x * other.x, y * other.y }; }
+	Vector2 operator/(const Vector2& other) const { return { x / other.x, y / other.y }; }
 	Vector2 operator=(const Vector2& other) { return { x = other.x, y = other.y }; }
 	Vector2 operator+=(const Vector2& other) { return *this = *this + other; }
 	Vector2 operator-=(const Vector2& other) { return *this = *this - other; }
 	Vector2 operator*=(const Vector2& other) { return *this = *this * other; }
 	Vector2 operator/=(const Vector2& other) { return *this = *this / other; }
 
-	Vector2 operator+(const float& other) { return { x + other,y + other }; };
-	Vector2 operator-(const float& other) { return { x - other,y - other }; };
-	Vector2 operator/(const float& other) { return { x / other,y / other }; };
-	Vector2 operator*(const float& other) { return { x * other,y * other }; };
+	Vector2 operator+(const float& other) const { return { x + other,y + other }; };
+	Vector2 operator-(const float& other) const { return { x - other,y - other }; };
+	Vector2 operator/(const float& other) const { return { x / other,y / other }; };
+	Vector2 operator*(const float& other) const { return { x * other,y * other }; };
 
 public:
 	/// <summary>
