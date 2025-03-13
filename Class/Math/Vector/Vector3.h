@@ -1,6 +1,6 @@
 #pragma once
 
-// ‘O•ûéŒ¾
+// å‰æ–¹å®£è¨€
 class Matrix4x4;
 
 class Vector3 final {
@@ -29,32 +29,32 @@ public:
 
 public:
 	/// <summary>
-	/// 3ŽŸŒ³ƒxƒNƒgƒ‹‚Ì’·‚³‚ð‹‚ß‚é
+	/// 3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>3ŽŸŒ³ƒxƒNƒgƒ‹‚Ì’·‚³</returns>
+	/// <returns>3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•</returns>
 	[[nodiscard]] float Length() const;
 
 	/// <summary>
-	/// ³‹K‰»‚³‚ê‚½3ŽŸŒ³ƒxƒNƒgƒ‹‚ð‹‚ß‚é
+	/// æ­£è¦åŒ–ã•ã‚ŒãŸ3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>³‹K‰»‚³‚ê‚½3ŽŸŒ³ƒxƒNƒgƒ‹</returns>
+	/// <returns>æ­£è¦åŒ–ã•ã‚ŒãŸ3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«</returns>
 	[[nodiscard]] Vector3 Normalize() const;
 
 public:
 	/// <summary>
-	/// 2‚Â‚Ì3ŽŸŒ³ƒxƒNƒgƒ‹‚Ì“àÏ‚ð‹‚ß‚é
+	/// 2ã¤ã®3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="v1">1‚Â–Ú‚Ì3ŽŸŒ³ƒxƒNƒgƒ‹</param>
-	/// <param name="v2">2‚Â–Ú‚Ì3ŽŸŒ³ƒxƒNƒgƒ‹</param>
-	/// <returns>2‚Â‚Ì3ŽŸŒ³ƒxƒNƒgƒ‹‚Ì“àÏ</returns>
+	/// <param name="v1">1ã¤ç›®ã®3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«</param>
+	/// <param name="v2">2ã¤ç›®ã®3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«</param>
+	/// <returns>2ã¤ã®3æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©</returns>
 	[[nodiscard]] float Dot(const Vector3& v1, const Vector3& v2);
 
 public:
 	/// <summary>
-	/// ƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·‚·‚é
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ã™ã‚‹
 	/// </summary>
-	/// <param name="vector">•ÏŠ·Œ³ƒ[ƒJƒ‹À•W</param>
-	/// <param name="matrix">•ÏŠ·‚ÉŽg—p‚·‚és—ñ</param>
-	/// <returns>ƒ[ƒ‹ƒhÀ•W</returns>
+	/// <param name="vector">å¤‰æ›å…ƒãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™</param>
+	/// <param name="matrix">å¤‰æ›ã«ä½¿ç”¨ã™ã‚‹è¡Œåˆ—</param>
+	/// <returns>ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™</returns>
 	[[nodiscard]] Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 };

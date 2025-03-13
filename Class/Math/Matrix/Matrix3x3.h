@@ -1,6 +1,6 @@
 #pragma once
 
-// ‘O•ûéŒ¾
+// å‰æ–¹å®£è¨€
 class Vector2;
 
 class Matrix3x3 final{
@@ -14,123 +14,123 @@ public:
 
 public:
 	/// <summary>
-	/// ‚±‚Ìs—ñ‚Ì‹ts—ñ‚ğ‹‚ß‚é
+	/// ã“ã®è¡Œåˆ—ã®é€†è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>‚±‚Ìs—ñ‚Ì‹ts—ñ</returns>
-	[[discard]] Matrix3x3 Inverse() const;
+	/// <returns>ã“ã®è¡Œåˆ—ã®é€†è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 Inverse() const;
 
 	/// <summary>
-	/// ‚±‚Ìs—ñ‚Ì“]’ns—ñ‚ğ‹‚ß‚é
+	/// ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>‚±‚Ìs—ñ‚Ì“]’ns—ñ</returns>
-	[[discard]] Matrix3x3 Transpose() const;
-
-public:
-	/// <summary>
-	/// 3x3‚Ì‹ts—ñ‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m">3x3‚Ìs—ñ</param>
-	/// <returns>3x3‚Ì‹ts—ñ</returns>
-	[[discard]] static Matrix3x3 Inverse(const Matrix3x3& m);
-
-	/// <summary>
-	/// 3x3‚Ì“]’us—ñ‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m">3x3‚Ìs—ñ</param>
-	/// <returns>3x3‚Ì“]’us—ñ</returns>
-	[[discard]] static Matrix3x3 Transpose(const Matrix3x3& m);
+	/// <returns>ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 Transpose() const;
 
 public:
 	/// <summary>
-	/// 2‚Â‚Ì3x3s—ñ‚Ì‰ÁZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 3x3ã®é€†è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <returns>2‚Â‚Ì3x3s—ñ‚Ì‰ÁZŒ‹‰Ê</returns>
-	[[discard]] static Matrix3x3 Add(const Matrix3x3& m1, const Matrix3x3& m2);
+	/// <param name="m">3x3ã®è¡Œåˆ—</param>
+	/// <returns>3x3ã®é€†è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix3x3 Inverse(const Matrix3x3& m);
 
 	/// <summary>
-	/// 2‚Â‚Ì3x3s—ñ‚ÌŒ¸ZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 3x3ã®è»¢ç½®è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <returns>2‚Â‚Ì3x3s—ñ‚ÌŒ¸ZŒ‹‰Ê</returns>
-	[[discard]] static Matrix3x3 Subtract(const Matrix3x3& m1, const Matrix3x3& m2);
-
-	/// <summary>
-	/// 2‚Â‚Ì3x3s—ñ‚ÌæZŒ‹‰Ê‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì3x3s—ñ</param>
-	/// <returns>2‚Â‚Ì3x3s—ñ‚ÌæZŒ‹‰Ê</returns>
-	[[discard]] static Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
+	/// <param name="m">3x3ã®è¡Œåˆ—</param>
+	/// <returns>3x3ã®è»¢ç½®è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix3x3 Transpose(const Matrix3x3& m);
 
 public:
 	/// <summary>
-	/// 3x3‚Ì’PˆÊs—ñ‚ğ‹‚ß‚é
+	/// 2ã¤ã®3x3è¡Œåˆ—ã®åŠ ç®—çµæœã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>3x3‚Ì’PˆÊs—ñ</returns>
-	[[discard]] static Matrix3x3 MakeIdentity3x3();
+	/// <param name="m1">1ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®3x3è¡Œåˆ—ã®åŠ ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix3x3 Add(const Matrix3x3& m1, const Matrix3x3& m2);
+
+	/// <summary>
+	/// 2ã¤ã®3x3è¡Œåˆ—ã®æ¸›ç®—çµæœã‚’æ±‚ã‚ã‚‹
+	/// </summary>
+	/// <param name="m1">1ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®3x3è¡Œåˆ—ã®æ¸›ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix3x3 Subtract(const Matrix3x3& m1, const Matrix3x3& m2);
+
+	/// <summary>
+	/// 2ã¤ã®3x3è¡Œåˆ—ã®ä¹—ç®—çµæœã‚’æ±‚ã‚ã‚‹
+	/// </summary>
+	/// <param name="m1">1ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®3x3è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®3x3è¡Œåˆ—ã®ä¹—ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
 
 public:
 	/// <summary>
-	/// Šg‘åk¬s—ñ‚ğì¬‚·‚é
+	/// 3x3ã®å˜ä½è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="scale">Šg‘åk¬‚Ìî•ñ</param>
-	/// <returns>Šg‘åk¬s—ñ</returns>
-	[[discard]] Matrix3x3 MakeScaleMatrix(const Vector2& scale) const;
-
-	/// <summary>
-	/// ‰ñ“]s—ñ‚ğì¬‚·‚é
-	/// </summary>
-	/// <param name="theta">ƒ‰ƒWƒAƒ“</param>
-	/// <returns>‰ñ“]s—ñ</returns>
-	[[discard]] Matrix3x3 MakeRotateMatrix(const float& theta) const;
-
-	/// <summary>
-	/// ˆÚ“®s—ñ‚ğì¬‚·‚é
-	/// </summary>
-	/// <param name="translate">ˆÚ“®—Ê‚Ìî•ñ</param>
-	/// <returns>ˆÚ“®s—ñ</returns>
-	[[discard]] Matrix3x3 MakeTranslateMatrix(const Vector2& translate) const;
-
-	/// <summary>
-	/// ƒAƒtƒBƒ“s—ñ‚ğì¬‚·‚é
-	/// </summary>
-	/// <param name="scale">Šg‘åk¬‚Ìî•ñ</param>
-	/// <param name="rotate">ƒ‰ƒWƒAƒ“</param>
-	/// <param name="translate">ˆÚ“®—Ê‚Ìî•ñ</param>
-	/// <returns>ƒAƒtƒBƒ“s—ñ</returns>
-	[[discard]] Matrix3x3 MakeAffineMatrix(const Vector2& scale, const float& rotate, const Vector2& translate) const;
+	/// <returns>3x3ã®å˜ä½è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix3x3 MakeIdentity3x3();
 
 public:
 	/// <summary>
-	/// ³Ë‰es—ñ‚ğì¬‚·‚é
+	/// æ‹¡å¤§ç¸®å°è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
 	/// </summary>
-	/// <param name="left">‰æ–Ê‚Ì¶’[À•W</param>
-	/// <param name="top">‰æ–Ê‚Ìã’[À•W</param>
-	/// <param name="right">‰æ–Ê‚Ì‰E’[À•W</param>
-	/// <param name="bottom">‰æ–Ê‚Ì‰º’[À•W</param>
-	/// <returns>³Ë‰es—ñ</returns>
-	[[discard]] Matrix3x3 MakeOrthographicMatrix(const float& left, const float& top, const float& right, const float& bottom) const;
+	/// <param name="scale">æ‹¡å¤§ç¸®å°ã®æƒ…å ±</param>
+	/// <returns>æ‹¡å¤§ç¸®å°è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeScaleMatrix(const Vector2& scale) const;
 
 	/// <summary>
-	/// ƒrƒ…[ƒ|[ƒgs—ñ‚ğì¬‚·‚é
+	/// å›è»¢è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
 	/// </summary>
-	/// <param name="left">‰æ–Ê‚Ì¶’[À•W</param>
-	/// <param name="top">‰æ–Ê‚Ìã’[À•W</param>
-	/// <param name="width">‰æ–Ê‚Ì‰E’[À•W</param>
-	/// <param name="height">‰æ–Ê‚Ì‰º’[À•W</param>
-	/// <returns>ƒrƒ…[ƒ|[ƒgs—ñ</returns>
-	[[discard]] Matrix3x3 MakeViewportMatrix(const float& left, const float& top, const float& width, const float& height) const;
+	/// <param name="theta">ãƒ©ã‚¸ã‚¢ãƒ³</param>
+	/// <returns>å›è»¢è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeRotateMatrix(const float& theta) const;
 
 	/// <summary>
-	/// ƒ[ƒ‹ƒhƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ‚ğì¬‚·‚é
+	/// ç§»å‹•è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
 	/// </summary>
-	/// <param name="worldMatrix">ƒ[ƒ‹ƒhs—ñ</param>
-	/// <param name="viewMatrix">ƒrƒ…[s—ñ</param>
-	/// <param name="orthoMatrix">³Ë‰es—ñ</param>
-	/// <param name="viewportMatrix">ƒrƒ…[ƒ|[ƒgs—ñ</param>
-	/// <returns>ƒ[ƒ‹ƒhƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ</returns>
-	[[discard]] Matrix3x3 MakeWvpVpMatrix(const Matrix3x3& worldMatrix, const Matrix3x3& viewMatrix, const Matrix3x3& orthoMatrix, const Matrix3x3& viewportMatrix) const;
+	/// <param name="translate">ç§»å‹•é‡ã®æƒ…å ±</param>
+	/// <returns>ç§»å‹•è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeTranslateMatrix(const Vector2& translate) const;
+
+	/// <summary>
+	/// ã‚¢ãƒ•ã‚£ãƒ³è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="scale">æ‹¡å¤§ç¸®å°ã®æƒ…å ±</param>
+	/// <param name="rotate">ãƒ©ã‚¸ã‚¢ãƒ³</param>
+	/// <param name="translate">ç§»å‹•é‡ã®æƒ…å ±</param>
+	/// <returns>ã‚¢ãƒ•ã‚£ãƒ³è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeAffineMatrix(const Vector2& scale, const float& rotate, const Vector2& translate) const;
+
+public:
+	/// <summary>
+	/// æ­£å°„å½±è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="left">ç”»é¢ã®å·¦ç«¯åº§æ¨™</param>
+	/// <param name="top">ç”»é¢ã®ä¸Šç«¯åº§æ¨™</param>
+	/// <param name="right">ç”»é¢ã®å³ç«¯åº§æ¨™</param>
+	/// <param name="bottom">ç”»é¢ã®ä¸‹ç«¯åº§æ¨™</param>
+	/// <returns>æ­£å°„å½±è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeOrthographicMatrix(const float& left, const float& top, const float& right, const float& bottom) const;
+
+	/// <summary>
+	/// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="left">ç”»é¢ã®å·¦ç«¯åº§æ¨™</param>
+	/// <param name="top">ç”»é¢ã®ä¸Šç«¯åº§æ¨™</param>
+	/// <param name="width">ç”»é¢ã®å³ç«¯åº§æ¨™</param>
+	/// <param name="height">ç”»é¢ã®ä¸‹ç«¯åº§æ¨™</param>
+	/// <returns>ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeViewportMatrix(const float& left, const float& top, const float& width, const float& height) const;
+
+	/// <summary>
+	/// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="worldMatrix">ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—</param>
+	/// <param name="viewMatrix">ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—</param>
+	/// <param name="orthoMatrix">æ­£å°„å½±è¡Œåˆ—</param>
+	/// <param name="viewportMatrix">ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—</param>
+	/// <returns>ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix3x3 MakeWvpVpMatrix(const Matrix3x3& worldMatrix, const Matrix3x3& viewMatrix, const Matrix3x3& orthoMatrix, const Matrix3x3& viewportMatrix) const;
 };

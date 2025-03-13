@@ -1,9 +1,10 @@
 #pragma once
 
-// ‘O•ûéŒ¾
+// å‰æ–¹å®£è¨€
 class Vector3;
 
-struct Matrix4x4 final{
+class Matrix4x4 final{
+public:
 	float m[4][4];
 
 public:
@@ -13,76 +14,97 @@ public:
 
 public:
 	/// <summary>
-	/// ‚±‚Ìs—ñ‚Ì‹ts—ñ‚ğ‹‚ß‚é
+	/// ã“ã®è¡Œåˆ—ã®é€†è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>‚±‚Ìs—ñ‚Ì‹ts—ñ</returns>
-	[[discard]] Matrix4x4 Inverse() const;
+	/// <returns>ã“ã®è¡Œåˆ—ã®é€†è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix4x4 Inverse() const;
 
 	/// <summary>
-	/// ‚±‚Ìs—ñ‚Ì“]’ns—ñ‚ğ‹‚ß‚é
+	/// ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>‚±‚Ìs—ñ‚Ì“]’ns—ñ</returns>
-	[[discard]] Matrix4x4 Transpose() const;
-
-public:
-	/// <summary>
-	/// 4x4‚Ì‹ts—ñ‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m">4x4‚Ìs—ñ</param>
-	/// <returns>4x4‚Ì‹ts—ñ</returns>
-	[[discard]] static Matrix4x4 Inverse(const Matrix4x4& m);
-
-	/// <summary>
-	/// 4x4‚Ì“]’us—ñ‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m">4x4‚Ìs—ñ</param>
-	/// <returns>4x4‚Ì“]’us—ñ</returns>
-	[[discard]] static Matrix4x4 Transpose(const Matrix4x4& m);
+	/// <returns>ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix4x4 Transpose() const;
 
 public:
 	/// <summary>
-	/// 2‚Â‚Ì4x4s—ñ‚Ì‰ÁZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 4x4ã®é€†è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <returns>2‚Â‚Ì4x4s—ñ‚Ì‰ÁZŒ‹‰Ê</returns>
-	[[discard]] static Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
+	/// <param name="m">4x4ã®è¡Œåˆ—</param>
+	/// <returns>4x4ã®é€†è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 Inverse(const Matrix4x4& m);
 
 	/// <summary>
-	/// 2‚Â‚Ì4x4s—ñ‚ÌŒ¸ZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 4x4ã®è»¢ç½®è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <returns>2‚Â‚Ì4x4s—ñ‚ÌŒ¸ZŒ‹‰Ê</returns>
-	[[discard]] static Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
-
-	/// <summary>
-	/// 2‚Â‚Ì4x4s—ñ‚ÌæZŒ‹‰Ê‚ğ‹‚ß‚é
-	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì4x4s—ñ</param>
-	/// <returns>2‚Â‚Ì4x4s—ñ‚ÌæZŒ‹‰Ê</returns>
-	[[discard]] static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+	/// <param name="m">4x4ã®è¡Œåˆ—</param>
+	/// <returns>4x4ã®è»¢ç½®è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 Transpose(const Matrix4x4& m);
 
 public:
 	/// <summary>
-	/// 4x4‚Ì’PˆÊs—ñ‚ğ‹‚ß‚é
+	/// 2ã¤ã®4x4è¡Œåˆ—ã®åŠ ç®—çµæœã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>4x4‚Ì’PˆÊs—ñ</returns>
-	[[discard]] static Matrix4x4 MakeIdentity4x4();
+	/// <param name="m1">1ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®4x4è¡Œåˆ—ã®åŠ ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
+
+	/// <summary>
+	/// 2ã¤ã®4x4è¡Œåˆ—ã®æ¸›ç®—çµæœã‚’æ±‚ã‚ã‚‹
+	/// </summary>
+	/// <param name="m1">1ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®4x4è¡Œåˆ—ã®æ¸›ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
+
+	/// <summary>
+	/// 2ã¤ã®4x4è¡Œåˆ—ã®ä¹—ç®—çµæœã‚’æ±‚ã‚ã‚‹
+	/// </summary>
+	/// <param name="m1">1ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®4x4è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®4x4è¡Œåˆ—ã®ä¹—ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 public:
 	/// <summary>
-	/// Šg‘åk¬s—ñ‚ğì¬‚·‚é
+	/// 4x4ã®å˜ä½è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="scale">Šg‘åk¬‚Ìî•ñ</param>
-	/// <returns>Šg‘åk¬s—ñ</returns>
-	[[discard]] static Matrix4x4 MakeScaleMatrix(const Vector3& translate);
+	/// <returns>4x4ã®å˜ä½è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeIdentity4x4();
+
+public:
+	/// <summary>
+	/// æ‹¡å¤§ç¸®å°è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="scale">æ‹¡å¤§ç¸®å°ã®æƒ…å ±</param>
+	/// <returns>æ‹¡å¤§ç¸®å°è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeScaleMatrix(const Vector3& translate);
 
 	/// <summary>
-	/// ˆÚ“®s—ñ‚ğì¬‚·‚é
+	/// ç§»å‹•è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
 	/// </summary>
-	/// <param name="translate">ˆÚ“®—Ê‚Ìî•ñ</param>
-	/// <returns>ˆÚ“®s—ñ</returns>
-	[[discard]] static Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+	/// <param name="translate">ç§»å‹•é‡ã®æƒ…å ±</param>
+	/// <returns>ç§»å‹•è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+
+	/// <summary>
+	/// Xè»¸ã®å›è»¢è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="radian">ãƒ©ã‚¸ã‚¢ãƒ³</param>
+	/// <returns>Xè»¸ã®å›è»¢è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeRotateXMatrix(const float& radian);
+
+	/// <summary>
+	/// Yè»¸ã®å›è»¢è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="radian">ãƒ©ã‚¸ã‚¢ãƒ³</param>
+	/// <returns>Xè»¸ã®å›è»¢è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeRotateYMatrix(const float& radian);
+
+	/// <summary>
+	/// Zè»¸ã®å›è»¢è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
+	/// </summary>
+	/// <param name="radian">ãƒ©ã‚¸ã‚¢ãƒ³</param>
+	/// <returns>Xè»¸ã®å›è»¢è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix4x4 MakeRotateZMatrix(const float& radian);
 };
