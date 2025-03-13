@@ -107,4 +107,20 @@ public:
 	/// <param name="radian">ラジアン</param>
 	/// <returns>X軸の回転行列</returns>
 	[[nodiscard]] static Matrix4x4 MakeRotateZMatrix(const float& radian);
+
+	/// <summary>
+	/// 3次元の回転行列を作成する
+	/// </summary>
+	/// <param name="radian">ラジアンで構成された回転情報</param>
+	/// <returns>3次元の回転行列</returns>
+	[[nodiscard]] static Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotate);
+
+	/// <summary>
+	/// 3次元のアフィン行列を作成する
+	/// </summary>
+	/// <param name="scale">拡縮の情報</param>
+	/// <param name="rotate">ラジアン</param>
+	/// <param name="translate">移動の情報</param>
+	/// <returns>3次元のアフィン行列</returns>
+	[[nodiscard]] static Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 };

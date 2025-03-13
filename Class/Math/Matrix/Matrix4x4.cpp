@@ -514,3 +514,18 @@ Matrix4x4 Matrix4x4::MakeRotateZMatrix(const float& radian) {
 
 	return result;
 }
+
+Matrix4x4 Matrix4x4::MakeRotateXYZMatrix(const Vector3& rotate) {
+	return Multiply(MakeRotateXMatrix(rotate.x),Multiply(MakeRotateYMatrix(rotate.y),MakeRotateZMatrix(rotate.z)));
+}
+
+Matrix4x4 Matrix4x4::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result = Multiply(
+		MakeScaleMatrix(scale),
+		Multiply(MakeRotateXYZMatrix(rotate),
+		MakeTranslateMatrix(translate)));
+
+	return result;
+}
