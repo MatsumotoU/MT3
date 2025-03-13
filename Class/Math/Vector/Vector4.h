@@ -26,15 +26,15 @@ public:
 
 public:
 	/// <summary>
-	/// 4ŽŸŒ³ƒxƒNƒgƒ‹‚Ì’·‚³‚ð‹‚ß‚é
+	/// 4æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>4ŽŸŒ³ƒxƒNƒgƒ‹‚Ì’·‚³</returns>
+	/// <returns>4æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•</returns>
 	[[nodiscard]] float Length() const;
 
 	/// <summary>
-	/// ³‹K‰»‚³‚ê‚½4ŽŸŒ³ƒxƒNƒgƒ‹‚ð‹‚ß‚é
+	/// æ­£è¦åŒ–ã•ã‚ŒãŸ4æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>³‹K‰»‚³‚ê‚½4ŽŸŒ³ƒxƒNƒgƒ‹</returns>
+	/// <returns>æ­£è¦åŒ–ã•ã‚ŒãŸ4æ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«</returns>
 	[[nodiscard]] Vector4 Normalize() const;
 };
 

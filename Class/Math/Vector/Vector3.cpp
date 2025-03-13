@@ -26,7 +26,7 @@ float Vector3::Dot(const Vector3& v1, const Vector3& v2) {
 
 Vector3 Vector3::Transform(const Vector3& vector, const Matrix4x4& matrix) {
     Vector3 result = {};
-
+    
     float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
     if (w == 0.0f) {
         assert(false);

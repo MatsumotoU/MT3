@@ -6,41 +6,41 @@ public:
 public:
 
 	/// <summary>
-	/// ‚±‚Ìs—ñ‚Ì“]’ns—ñ‚ğ‹‚ß‚é
+	/// ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>‚±‚Ìs—ñ‚Ì“]’ns—ñ</returns>
-	[[discard]] Matrix2x2 Transpose() const;
+	/// <returns>ã“ã®è¡Œåˆ—ã®è»¢åœ°è¡Œåˆ—</returns>
+	[[nodiscard]] Matrix2x2 Transpose() const;
 
 public:
 
 	/// <summary>
-	/// 2x2‚Ì“]’us—ñ‚ğ‹‚ß‚é
+	/// 2x2ã®è»¢ç½®è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m">2x2‚Ìs—ñ</param>
-	/// <returns>2x2‚Ì“]’us—ñ</returns>
-	[[discard]] static Matrix2x2 Transpose(const Matrix2x2& m);
+	/// <param name="m">2x2ã®è¡Œåˆ—</param>
+	/// <returns>2x2ã®è»¢ç½®è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix2x2 Transpose(const Matrix2x2& m);
 
 public:
 	/// <summary>
-	/// 2‚Â‚Ì2x2s—ñ‚Ì‰ÁZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 2ã¤ã®2x2è¡Œåˆ—ã®åŠ ç®—çµæœã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì2x2s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì2x2s—ñ</param>
-	/// <returns>2‚Â‚Ì2x2s—ñ‚Ì‰ÁZŒ‹‰Ê</returns>
-	[[discard]] static Matrix2x2 Add(const Matrix2x2& m1, const Matrix2x2& m2);
+	/// <param name="m1">1ã¤ç›®ã®2x2è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®2x2è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®2x2è¡Œåˆ—ã®åŠ ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix2x2 Add(const Matrix2x2& m1, const Matrix2x2& m2);
 
 	/// <summary>
-	/// 2‚Â‚Ì2x2s—ñ‚ÌŒ¸ZŒ‹‰Ê‚ğ‹‚ß‚é
+	/// 2ã¤ã®2x2è¡Œåˆ—ã®æ¸›ç®—çµæœã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <param name="m1">1‚Â–Ú‚Ì2x2s—ñ</param>
-	/// <param name="m2">2‚Â–Ú‚Ì2x2s—ñ</param>
-	/// <returns>2‚Â‚Ì2x2s—ñ‚ÌŒ¸ZŒ‹‰Ê</returns>
-	[[discard]] static Matrix2x2 Subtract(const Matrix2x2& m1, const Matrix2x2& m2);
+	/// <param name="m1">1ã¤ç›®ã®2x2è¡Œåˆ—</param>
+	/// <param name="m2">2ã¤ç›®ã®2x2è¡Œåˆ—</param>
+	/// <returns>2ã¤ã®2x2è¡Œåˆ—ã®æ¸›ç®—çµæœ</returns>
+	[[nodiscard]] static Matrix2x2 Subtract(const Matrix2x2& m1, const Matrix2x2& m2);
 
 public:
 	/// <summary>
-	/// 2x2‚Ì’PˆÊs—ñ‚ğ‹‚ß‚é
+	/// 2x2ã®å˜ä½è¡Œåˆ—ã‚’æ±‚ã‚ã‚‹
 	/// </summary>
-	/// <returns>2x2‚Ì’PˆÊs—ñ</returns>
-	[[discard]] static Matrix2x2 MakeIdentity2x2();
+	/// <returns>2x2ã®å˜ä½è¡Œåˆ—</returns>
+	[[nodiscard]] static Matrix2x2 MakeIdentity2x2();
 };

@@ -74,7 +74,7 @@ Matrix4x4 Matrix4x4::Inverse() const {
 		+ this->m[0][2] * this->m[1][1] * this->m[2][3] * this->m[3][0]
 		+ this->m[0][1] * this->m[1][3] * this->m[2][2] * this->m[3][0];
 
-	// —ëœZ‰ñ”ğ—p
+	// é›¶é™¤ç®—å›é¿ç”¨
 	if (i == 0.0f) {
 		assert(false);
 	}
@@ -261,7 +261,7 @@ Matrix4x4 Matrix4x4::Inverse(const Matrix4x4& m) {
 		+ m.m[0][2] * m.m[1][1] * m.m[2][3] * m.m[3][0]
 		+ m.m[0][1] * m.m[1][3] * m.m[2][2] * m.m[3][0];
 
-	// —ëœZ‰ñ”ğ—p
+	// é›¶é™¤ç®—å›é¿ç”¨
 	if (i == 0.0f) {
 		assert(false);
 	}
@@ -478,6 +478,39 @@ Matrix4x4 Matrix4x4::MakeTranslateMatrix(const Vector3& translate) {
 	result.m[3][0] = translate.x;
 	result.m[3][1] = translate.y;
 	result.m[3][2] = translate.z;
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::MakeRotateXMatrix(const float& radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[1][1] = cos(radian);
+	result.m[2][1] = -sin(radian);
+	result.m[1][2] = sin(radian);
+	result.m[2][2] = cos(radian);
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::MakeRotateYMatrix(const float& radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = cos(radian);
+	result.m[2][0] = sin(radian);
+	result.m[0][2] = -sin(radian);
+	result.m[2][2] = cos(radian);
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::MakeRotateZMatrix(const float& radian) {
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = cos(radian);
+	result.m[1][0] = -sin(radian);
+	result.m[0][1] = sin(radian);
+	result.m[1][1] = cos(radian);
 
 	return result;
 }
