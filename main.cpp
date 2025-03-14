@@ -1,7 +1,7 @@
 #include <Novice.h>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LC1A_22_マツモトユウタ_3次元アフィン変換行列";
+const char kWindowTitle[] = "LC1A_22_マツモトユウタ_レンダリングパイプラインV2";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -16,10 +16,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vector3 scale{ 1.2f,0.79f,-2.1f };
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
-	Vector3 translate{ 2.7f,-4.15f,1.57f };
-	Matrix4x4 worldMatrix = Matrix4x4::MakeAffineMatrix(scale, rotate, translate);
+	Matrix4x4 orthographicMatrix = Matrix4x4::MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
+	Matrix4x4 perspectiveFovMatrix = Matrix4x4::MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
+	Matrix4x4 viewportMatrix = Matrix4x4::MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -42,7 +41,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, worldMatrix, "worldMatrix");
+		MatrixScreenPrintf(0, 0, orthographicMatrix, "orthographicMatrix");
+		MatrixScreenPrintf(0, kRowHeight * 5, perspectiveFovMatrix, "perspectiveFovMatrix");
+		MatrixScreenPrintf(0, kRowHeight * 5 * 2, viewportMatrix, "viewportMatrix");
 
 		///
 		/// ↑描画処理ここまで
