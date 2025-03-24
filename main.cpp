@@ -85,11 +85,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		VectorScreenPrintf(0, 0, cross, "Cross");
 
-		Novice::DrawTriangle(
-			static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
-			static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
-			static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y),
-			RED, kFillModeSolid);
+		if (Vector3::Cross(screenVertices[0], Vector3::Cross(screenVertices[1], screenVertices[2])).z < 0.0f) {
+			Novice::DrawTriangle(
+				static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
+				static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
+				static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y),
+				RED, kFillModeSolid);
+		}
 
 		///
 		/// ↑描画処理ここまで
