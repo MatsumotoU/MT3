@@ -44,3 +44,12 @@ Vector3 Vector3::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
     return result;
 }
+
+Vector3 Vector3::Project(const Vector3& v1, const Vector3& v2) {
+    Vector3 result{};
+    if (powf(v2.Length(), 2) != 0.0f) {
+        float t = Dot(v1, v2) / powf(v2.Length(), 2);
+        result = v2 * t;
+    }
+    return result;
+}

@@ -47,7 +47,7 @@ public:
 	/// <param name="v1">1つ目の3次元ベクトル</param>
 	/// <param name="v2">2つ目の3次元ベクトル</param>
 	/// <returns>2つの3次元ベクトルの内積</returns>
-	[[nodiscard]] static float Dot(const Vector3& v1, const Vector3& v2) ;
+	[[nodiscard]] static float Dot(const Vector3& v1, const Vector3& v2);
 
 	/// <summary>
 	/// 2つの3次元ベクトルの外積を求める
@@ -55,7 +55,7 @@ public:
 	/// <param name="v1">1つ目の3次元ベクトル</param>
 	/// <param name="v2">2つ目の3次元ベクトル</param>
 	/// <returns>2つの3次元ベクトルの外積</returns>
-	[[nodiscard]] static Vector3 Cross(const Vector3& v1, const Vector3& v2) ;
+	[[nodiscard]] static Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
 public:
 	/// <summary>
@@ -65,4 +65,20 @@ public:
 	/// <param name="matrix">変換に使用する行列</param>
 	/// <returns>ワールド座標</returns>
 	[[nodiscard]] static Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
+public:
+	/// <summary>
+	/// 正射影ベクトルを求める
+	/// </summary>
+	/// <param name="v1">1つ目の3次元ベクトル</param>
+	/// <param name="v2">2つ目の3次元ベクトル</param>
+	/// <returns>正射影ベクトル</returns>
+	[[nodiscard]] static Vector3 Project(const Vector3& v1, const Vector3& v2);
 };
+
+
+
+
+
+
+

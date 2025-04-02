@@ -8,6 +8,43 @@ struct Sphere
 	int subdivision;
 };
 
+
+/// <summary>
+/// 直線
+/// </summary>
+struct Line
+{
+	Vector3 origin; //!< 始点
+	Vector3 diff; //!< 終点への差分ベクトル
+};
+
+/// <summary>
+/// 半直線
+/// </summary>
+struct Ray
+{
+	Vector3 origin; //!< 始点
+	Vector3 diff; //!< 終点への差分ベクトル
+};
+
+/// <summary>
+/// 線分
+/// </summary>
+struct Segment
+{
+	Vector3 origin; //!< 始点
+	Vector3 diff; //!< 終点への差分ベクトル
+};
+
+
+/// <summary>
+/// 最近接点を求める
+/// </summary>
+/// <param name="point">対象となる点の位置</param>
+/// <param name="segment">対象とする線分</param>
+/// <returns>最近接点</returns>
+[[nodiscard]] Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+
 unsigned int ColorFade(unsigned int color, float alpha);
 
 template <typename T>

@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_グリッドと球体を描こう";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_点と線の距離";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -25,6 +25,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,32 };
 
+	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
+	Vector3 point{ -1.5f,0.6f,0.6f };
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -38,6 +41,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		Vector3 project = Vector3::Project(point - segment.origin, segment.diff);
+		Vector3 closestPoint = ClosestPoint(point, segment);
+
+		Sphere pointSphere{ point,0.01f,16 };
+		Sphere closestPointSphere{ closestPoint,0.01f,16 };
+
 		Matrix4x4 cameraMatrix = Matrix4x4::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
 		Matrix4x4 viewMatrix = Matrix4x4::Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = Matrix4x4::MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
@@ -45,14 +54,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
+		Vector3 start = Vector3::Transform(Vector3::Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = Vector3::Transform(Vector3::Transform(segment.origin + segment.diff, viewProjectionMatrix), viewportMatrix);
+
 		// ImGui
-		ImGui::Begin("Window");
+		ImGui::Begin("CameraWindow");
 
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
-		ImGui::DragInt("SphereSubdivision", &sphere.subdivision, 1.0f, 8);
+
+		ImGui::End();
+
+		// 線分の情報
+		ImGui::Begin("SegmentWindow");
+
+		ImGui::InputFloat3("Point", &point.x);
+		ImGui::InputFloat3("Segmentorigin", &segment.origin.x);
+		ImGui::InputFloat3("Segmentdiff", &segment.diff.x);
+		ImGui::InputFloat3("Project", &project.x);
 
 		ImGui::End();
 
@@ -65,7 +84,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, WHITE);
+
+		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
+		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, RED);
+		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, BLACK);
 
 		///
 		/// ↑描画処理ここまで
