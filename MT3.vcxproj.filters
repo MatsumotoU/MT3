@@ -149,5 +149,7 @@
     <ClInclude Include="Class\Math\Transform.h" />
     <ClInclude Include="Class\Math\Vector\Vector2.h" />
     <ClInclude Include="Class\Math\Vector\Vector3.h" />
+    <ClInclude Include="Class\Math\Shape\Line.h" />
+    <ClInclude Include="Class\Math\Shape\Ray.h" />
   </ItemGroup>
 </Project>

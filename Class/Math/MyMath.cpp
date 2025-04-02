@@ -3,6 +3,12 @@
 #include <assert.h>
 #include <numbers>
 
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment) {
+	Vector3 result{};
+	result = segment.origin + Vector3::Project(point - segment.origin, segment.diff);
+	return result;
+}
+
 unsigned int ColorFade(unsigned int color, float alpha) {
 
 	unsigned int maskColor = 0xFFFFFF00 & color;
@@ -216,7 +222,6 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 				static_cast<int>(c.x), static_cast<int>(c.y),
 				static_cast<unsigned int>(color));
 
-			Novice::DrawEllipse(static_cast<int>(a.x), static_cast<int>(a.y), 5, 5, 0.0f, RED, kFillModeSolid);
 		}
 	}
 }
