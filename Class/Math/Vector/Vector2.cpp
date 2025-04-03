@@ -8,13 +8,10 @@ float Vector2::Length() const {
 
 Vector2 Vector2::Normalize() const {
     Vector2 result = {};
-    if (this->Length() == 0.0f) {
-        assert(false);
+    if (this->Length() != 0.0f) {
+        result.x = this->x / this->Length();
+        result.y = this->y / this->Length();
     }
-
-    result.x = this->x / this->Length();
-    result.y = this->y / this->Length();
-
     return result;
 }
 
