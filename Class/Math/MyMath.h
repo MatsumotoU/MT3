@@ -6,6 +6,7 @@ struct Sphere
 	Vector3 center;
 	float radius;
 	int subdivision;
+	unsigned int color;
 };
 
 

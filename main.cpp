@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_点と線の距離";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_3次元衝突判定";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -23,10 +23,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,32 };
+	Sphere sphere1{ {0.0f,0.0f,0.0f},1.0f,32,WHITE };
+	Sphere sphere2{ {0.0f,0.0f,0.0f},0.5f,32,WHITE };
 
-	Segment segment{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
-	Vector3 point{ -1.5f,0.6f,0.6f };
+	// マウス操作用
+	Vector3 cursorTranslate{};
+	Vector3 cursorRotate{};
+	Vector3 cursorScale{1.0f,1.0f,1.0f};
+	Vector2 cursorMoveDir{};
+	int cursorPosX = 0;
+	int cursorPosY = 0;
+	int oldCursorPosX = cursorPosX;
+	int oldCursorPosY = cursorPosY;
+	float moveSpeed = 0.05f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -41,37 +50,84 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		Vector3 project = Vector3::Project(point - segment.origin, segment.diff);
-		Vector3 closestPoint = ClosestPoint(point, segment);
+		// カーソルの移動方向取得
+		oldCursorPosX = cursorPosX;
+		oldCursorPosY = cursorPosY;
+		Novice::GetMousePosition(&cursorPosX, &cursorPosY);
+		cursorMoveDir = {
+			static_cast<float>(oldCursorPosX - cursorPosX),
+			static_cast<float>(oldCursorPosY - cursorPosY)
+		};
+		cursorMoveDir = cursorMoveDir.Normalize();
 
-		Sphere pointSphere{ point,0.01f,16 };
-		Sphere closestPointSphere{ closestPoint,0.01f,16 };
+		// 回転
+		if (Novice::IsPressMouse(2)) {
+			cursorRotate.y += (-cursorMoveDir.x * moveSpeed);
+			cursorRotate.x += (cursorMoveDir.y * moveSpeed);
+		}
 
+		// 平行移動
+		if (Novice::IsPressMouse(1)) {
+			cursorTranslate.x += (cursorMoveDir.x * moveSpeed);
+			cursorTranslate.y += (-cursorMoveDir.y * moveSpeed);
+		}
+
+		// 拡大縮小
+		if (Novice::GetWheel() > 0) {
+			cursorScale.x -= moveSpeed;
+			cursorScale.y -= moveSpeed;
+			cursorScale.z -= moveSpeed;
+		}
+		if (Novice::GetWheel() < 0) {
+			cursorScale.x += moveSpeed;
+			cursorScale.y += moveSpeed;
+			cursorScale.z += moveSpeed;
+		}
+		Matrix4x4 cursorMatrix = Matrix4x4::MakeAffineMatrix(cursorScale, cursorRotate, cursorTranslate);
+
+		// ビュープロジェクション行列とビューポート行列
 		Matrix4x4 cameraMatrix = Matrix4x4::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
+		cameraMatrix = Matrix4x4::Multiply(cameraMatrix,cursorMatrix );
 		Matrix4x4 viewMatrix = Matrix4x4::Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = Matrix4x4::MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
 		Matrix4x4 viewportMatrix = Matrix4x4::MakeViewportMatrix(0, 0, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
-
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
-		Vector3 start = Vector3::Transform(Vector3::Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = Vector3::Transform(Vector3::Transform(segment.origin + segment.diff, viewProjectionMatrix), viewportMatrix);
+		// 当たり判定
+		if ((sphere1.center - sphere2.center).Length() <= sphere1.radius + sphere2.radius) {
+			sphere1.color = RED;
+		} else {
+			sphere1.color = WHITE;
+		}
 
 		// ImGui
 		ImGui::Begin("CameraWindow");
 
+		ImGui::Text("CameraMove: MouseRightCrick + Move");
+		ImGui::Text("CameraRotate: MouseMidleCrick + Move");
+		ImGui::Text("CameraScale: MouseMidleWheel+-");
+
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat("MoveSpeed", &moveSpeed, 0.01f, 0.0f, 1.0f);
+		if (ImGui::Button("ResetCarera")) {
+			cursorTranslate = { 0.0f,0.0f,0.0f };
+			cursorRotate = { 0.0f,0.0f,0.0f };
+			cursorScale = { 1.0f,1.0f,1.0f };
+		}
 
 		ImGui::End();
 
 		// 線分の情報
 		ImGui::Begin("SegmentWindow");
 
-		ImGui::InputFloat3("Point", &point.x);
-		ImGui::InputFloat3("Segmentorigin", &segment.origin.x);
-		ImGui::InputFloat3("Segmentdiff", &segment.diff.x);
-		ImGui::InputFloat3("Project", &project.x);
+		ImGui::Text("Sphere1");
+		ImGui::DragFloat3("Sphere1_Translate", &sphere1.center.x,0.01f);
+		ImGui::DragFloat("Sphere1_Radius", &sphere1.radius, 0.01f);
+
+		ImGui::Text("Sphere2");
+		ImGui::DragFloat3("Sphere2_Translate", &sphere2.center.x, 0.01f);
+		ImGui::DragFloat("Sphere2_Radius", &sphere2.radius, 0.01f);
 
 		ImGui::End();
 
@@ -82,12 +138,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-		
-		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		Novice::DrawLine(static_cast<int>(start.x), static_cast<int>(start.y), static_cast<int>(end.x), static_cast<int>(end.y), WHITE);
-		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, RED);
-		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, BLACK);
+		DrawGrid(viewProjectionMatrix, viewportMatrix);
+		DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, sphere1.color);
+		DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, sphere2.color);
 
 		///
 		/// ↑描画処理ここまで
