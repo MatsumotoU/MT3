@@ -23,6 +23,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
+	Segment segment{ {0.0f,1.0f,0.0f},{0.0f,1.0f,0.0f} };
+	uint32_t segmentColor = WHITE;
 	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,32,WHITE };
 
 	Plane plane{ {0.0f,1.0f,0.0f},1.0f };
@@ -95,19 +97,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// 当たり判定
-		if (ColisionPlaneToSphere(plane, sphere)) {
-			sphere.color = RED;
+		if (isCollision(segment, plane)) {
+			segmentColor = RED;
 		} else {
-			sphere.color = WHITE;
+			segmentColor = WHITE;
 		}
 
 		// ImGui
 		ImGui::Begin("CameraWindow");
-
 		ImGui::Text("CameraMove: MouseRightCrick + Move");
 		ImGui::Text("CameraRotate: MouseMidleCrick + Move");
 		ImGui::Text("CameraScale: MouseMidleWheel+-");
-
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat("MoveSpeed", &moveSpeed, 0.01f, 0.0f, 1.0f);
@@ -116,25 +116,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			cursorRotate = { 0.0f,0.0f,0.0f };
 			cursorScale = { 1.0f,1.0f,1.0f };
 		}
-
 		ImGui::End();
 
 		// 線分の情報
-		ImGui::Begin("SphereWindow");
-
-		ImGui::Text("Sphere");
-		ImGui::DragFloat3("SphereTranslate", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
-
+		ImGui::Begin("SegmentWindow");
+		ImGui::DragFloat3("SegmentOrigine", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.01f);
+		segment.diff = segment.diff.Normalize();
 		ImGui::End();
 
 		// 平面
 		ImGui::Begin("PlaneWindow");
-
 		ImGui::DragFloat3("normal", &plane.normal.x, 0.01f);
 		plane.normal = plane.normal.Normalize();
 		ImGui::DragFloat("distance", &plane.distance, 0.01f);
-
 		ImGui::End();
 
 		///
@@ -146,8 +141,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, sphere.color);
 		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, static_cast<unsigned int>(segmentColor));
 
 		///
 		/// ↑描画処理ここまで

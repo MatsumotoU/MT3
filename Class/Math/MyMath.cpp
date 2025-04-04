@@ -95,6 +95,15 @@ void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* str) 
 	}
 }
 
+void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	Vector3 origine = Vector3::Transform(Vector3::Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+	Vector3 endPoint = Vector3::Transform(Vector3::Transform(segment.origin + segment.diff, viewProjectionMatrix), viewportMatrix);
+	Novice::DrawLine(
+		static_cast<int>(origine.x), static_cast<int>(origine.y),
+		static_cast<int>(endPoint.x), static_cast<int>(endPoint.y),
+		color);
+}
+
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) {
 	const float kGridHalfWidth = 2.0f;
 	const uint32_t kSubdivision = 10;
@@ -271,4 +280,20 @@ int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2) {
 int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere) {
 	float length = fabsf(Vector3::Dot(plane.normal, sphere.center) - (plane.normal * plane.distance).Length());
 	return length <= sphere.radius;
+}
+
+int isCollision(const Segment& segment, const Plane& plane) {
+	float dot = Vector3::Dot(plane.normal, segment.diff);
+	// 並行回避
+	if (dot == 0.0f) {
+		return false;
+	}
+
+	float t = (plane.distance - Vector3::Dot(segment.origin, plane.normal)) / dot;
+
+	if (t >= 0.0f && segment.diff.Length() >= t) {
+		return true;
+	}
+	Novice::ScreenPrintf(0, 0, "%f", t);
+	return false;
 }

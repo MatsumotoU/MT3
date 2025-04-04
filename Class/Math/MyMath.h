@@ -83,9 +83,13 @@ void MatrixScreenPrintf(int x, int y, Matrix3x3 matrix);
 void VectorScreenPrintf(int x, int y, Vector3 vector3,const char* str);
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* str);
 
+void DrawSegment(const Segment& segment,const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2);
 int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
+
+int isCollision(const Segment& segment, const Plane& plane);
+int isCollision(const Line& line, const Plane& plane);
