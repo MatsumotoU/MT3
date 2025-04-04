@@ -225,3 +225,50 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 		}
 	}
 }
+
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	Vector3 center = plane.normal * plane.distance;
+
+	Vector3 perpendiculars[4]{};
+	perpendiculars[0] = Vector3::Normalize(Vector3::Perpendicular(plane.normal));
+	perpendiculars[1] = { -perpendiculars[0].x,-perpendiculars[0].y ,-perpendiculars[0].z };
+	perpendiculars[2] = Vector3::Cross(plane.normal, perpendiculars[0]);
+	perpendiculars[3] = { -perpendiculars[2].x,-perpendiculars[2].y ,-perpendiculars[2].z };
+	Vector3 points[4]{};
+	for (int32_t index = 0; index < 4; ++index) {
+		Vector3 extend = perpendiculars[index] * 2.0f;
+		Vector3 point = center + extend;
+		points[index] = Vector3::Transform(Vector3::Transform(point, viewProjectionMatrix), viewportMatrix);
+	}
+	Novice::DrawLine(
+		static_cast<int>(points[0].x), static_cast<int>(points[0].y),
+		static_cast<int>(points[3].x), static_cast<int>(points[3].y),
+		static_cast<unsigned int>(color));
+	Novice::DrawLine(
+		static_cast<int>(points[1].x), static_cast<int>(points[1].y),
+		static_cast<int>(points[2].x), static_cast<int>(points[2].y),
+		static_cast<unsigned int>(color));
+	Novice::DrawLine(
+		static_cast<int>(points[2].x), static_cast<int>(points[2].y),
+		static_cast<int>(points[0].x), static_cast<int>(points[0].y),
+		static_cast<unsigned int>(color));
+	Novice::DrawLine(
+		static_cast<int>(points[3].x), static_cast<int>(points[3].y),
+		static_cast<int>(points[1].x), static_cast<int>(points[1].y),
+		static_cast<unsigned int>(color));
+
+	
+}
+
+int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2) {
+	if ((sphere1.center - sphere2.center).Length() <= sphere1.radius + sphere2.radius) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere) {
+	float length = fabsf(Vector3::Dot(plane.normal, sphere.center) - (plane.normal * plane.distance).Length());
+	return length <= sphere.radius;
+}

@@ -9,14 +9,19 @@ struct Sphere
 	unsigned int color;
 };
 
+struct Plane
+{
+	Vector3 normal; // 法線
+	float distance; // 距離
+};
 
 /// <summary>
 /// 直線
 /// </summary>
 struct Line
 {
-	Vector3 origin; //!< 始点
-	Vector3 diff; //!< 終点への差分ベクトル
+	Vector3 origin; // 始点
+	Vector3 diff; // 終点への差分ベクトル
 };
 
 /// <summary>
@@ -80,3 +85,7 @@ void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* str);
 
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2);
+int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
