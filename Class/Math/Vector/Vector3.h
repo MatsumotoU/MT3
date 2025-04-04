@@ -42,6 +42,13 @@ public:
 
 public:
 	/// <summary>
+	/// 正規化された3次元ベクトルを求める
+	/// </summary>
+	/// <returns>正規化された3次元ベクトル</returns>
+	[[nodiscard]] static Vector3 Normalize(const Vector3& vector);
+
+public:
+	/// <summary>
 	/// 2つの3次元ベクトルの内積を求める
 	/// </summary>
 	/// <param name="v1">1つ目の3次元ベクトル</param>
@@ -74,6 +81,13 @@ public:
 	/// <param name="v2">2つ目の3次元ベクトル</param>
 	/// <returns>正射影ベクトル</returns>
 	[[nodiscard]] static Vector3 Project(const Vector3& v1, const Vector3& v2);
+
+	/// <summary>
+	/// あるベクトルの垂直なベクトルを求める
+	/// </summary>
+	/// <param name="vector">あるベクトル</param>
+	/// <returns>あるベクトルの垂直なベクトル</returns>
+	[[nodiscard]] static Vector3 Perpendicular(const Vector3& vector);
 };
 
 

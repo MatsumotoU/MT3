@@ -20,6 +20,18 @@ Vector3 Vector3::Normalize() const {
     return result;
 }
 
+Vector3 Vector3::Normalize(const Vector3& vector) {
+    Vector3 result = {};
+
+    if (vector.Length() != 0.0f) {
+        result.x = vector.x / vector.Length();
+        result.y = vector.y / vector.Length();
+        result.z = vector.z / vector.Length();
+    }
+
+    return result;
+}
+
 float Vector3::Dot(const Vector3& v1, const Vector3& v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
@@ -52,4 +64,11 @@ Vector3 Vector3::Project(const Vector3& v1, const Vector3& v2) {
         result = v2 * t;
     }
     return result;
+}
+
+Vector3 Vector3::Perpendicular(const Vector3& vector) {
+    if (vector.x != 0.0f || vector.y != 0.0f) {
+        return { -vector.y,vector.x,0.0f };
+    }
+    return { 0.0f,-vector.z,vector.y };
 }
