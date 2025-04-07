@@ -27,7 +27,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint32_t segmentColor = WHITE;
 	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,32,WHITE };
 
-	Plane plane{ {0.0f,1.0f,0.0f},1.0f };
+	Triangle triangle{};
+	triangle.vertices[0] = { 0.0f,0.5f,0.5f };
+	triangle.vertices[1] = { 0.25f,0.0f,0.0f };
+	triangle.vertices[2] = { -0.25f,0.0f,0.0f };
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -39,6 +42,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int oldCursorPosX = cursorPosX;
 	int oldCursorPosY = cursorPosY;
 	float moveSpeed = 0.05f;
+
+	// ワールド軸表示用
+	bool isActiveAxis = true;
+	int axisSize = 50;
+	Vector2 axisTranslate = { 100.0f,620.0f };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -97,25 +105,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// 当たり判定
-		if (isCollision(segment, plane)) {
+		if (isCollision(segment, triangle)) {
 			segmentColor = RED;
 		} else {
 			segmentColor = WHITE;
 		}
 
 		// ImGui
-		ImGui::Begin("CameraWindow");
-		ImGui::Text("CameraMove: MouseRightCrick + Move");
-		ImGui::Text("CameraRotate: MouseMidleCrick + Move");
-		ImGui::Text("CameraScale: MouseMidleWheel+-");
-		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
-		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat("MoveSpeed", &moveSpeed, 0.01f, 0.0f, 1.0f);
-		if (ImGui::Button("ResetCarera")) {
-			cursorTranslate = { 0.0f,0.0f,0.0f };
-			cursorRotate = { 0.0f,0.0f,0.0f };
-			cursorScale = { 1.0f,1.0f,1.0f };
+		ImGui::Begin("OpWindow");
+		if (ImGui::TreeNode("Camera")) {
+			ImGui::Text("CameraMove: MouseRightCrick + Move");
+			ImGui::Text("CameraRotate: MouseMidleCrick + Move");
+			ImGui::Text("CameraScale: MouseMidleWheel+-");
+			ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
+			ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+			ImGui::DragFloat("MoveSpeed", &moveSpeed, 0.01f, 0.0f, 1.0f);
+			if (ImGui::Button("ResetCarera")) {
+				cursorTranslate = { 0.0f,0.0f,0.0f };
+				cursorRotate = { 0.0f,0.0f,0.0f };
+				cursorScale = { 1.0f,1.0f,1.0f };
+			}
+
+			ImGui::TreePop();
 		}
+		if (ImGui::TreeNode("Axis")) {
+			ImGui::Checkbox("isActive", &isActiveAxis);
+			ImGui::DragFloat2("AxisTranslate", &axisTranslate.x);
+			ImGui::DragInt("AxisSize", &axisSize,0);
+			ImGui::TreePop();
+		}
+		
 		ImGui::End();
 
 		// 線分の情報
@@ -126,10 +145,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		// 平面
-		ImGui::Begin("PlaneWindow");
-		ImGui::DragFloat3("normal", &plane.normal.x, 0.01f);
-		plane.normal = plane.normal.Normalize();
-		ImGui::DragFloat("distance", &plane.distance, 0.01f);
+		ImGui::Begin("TriangleWindow");
+
+		ImGui::DragFloat3("Triangle.v0", &triangle.vertices[0].x, 0.01f);
+		ImGui::DragFloat3("Triangle.v1", &triangle.vertices[1].x, 0.01f);
+		ImGui::DragFloat3("Triangle.v2", &triangle.vertices[2].x, 0.01f);
+
 		ImGui::End();
 
 		///
@@ -141,8 +162,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, WHITE);
 		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, static_cast<unsigned int>(segmentColor));
+
+		if (isActiveAxis) {
+			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
+		}
 
 		///
 		/// ↑描画処理ここまで
