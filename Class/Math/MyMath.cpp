@@ -316,6 +316,38 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 	
 }
 
+void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	Vector3 p[8]{};
+	p[0] = aabb.min;
+	p[1] = { aabb.min.x,aabb.max.y,aabb.min.z };
+	p[2] = { aabb.min.x,aabb.max.y,aabb.max.z };
+	p[3] = { aabb.min.x,aabb.min.y,aabb.max.z };
+	
+	p[4] = { aabb.max.x,aabb.min.y,aabb.min.z };
+	p[5] = { aabb.max.x,aabb.max.y,aabb.min.z };
+	p[6] = aabb.max;
+	p[7] = { aabb.max.x,aabb.min.y,aabb.max.z };
+
+	for (int32_t index = 0; index < 8; ++index) {
+		p[index] = Vector3::Transform(Vector3::Transform(p[index], viewProjectionMatrix), viewportMatrix);
+	}
+
+	for (int32_t index = 0; index < 4; ++index) {
+		Novice::DrawLine(
+			static_cast<int>(p[index].x), static_cast<int>(p[index].y),
+			static_cast<int>(p[(index + 1) % 4].x), static_cast<int>(p[(index + 1) % 4].y),
+			static_cast<unsigned int>(color));
+		Novice::DrawLine(
+			static_cast<int>(p[index + 4].x), static_cast<int>(p[index + 4].y),
+			static_cast<int>(p[(index + 1) % 4 + 4].x), static_cast<int>(p[(index + 1) % 4 + 4].y),
+			static_cast<unsigned int>(color));
+		Novice::DrawLine(
+			static_cast<int>(p[index].x), static_cast<int>(p[index].y),
+			static_cast<int>(p[(index + 4)].x), static_cast<int>(p[(index + 4)].y),
+			static_cast<unsigned int>(color));
+	}
+}
+
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2) {
 	if ((sphere1.center - sphere2.center).Length() <= sphere1.radius + sphere2.radius) {
 		return true;
@@ -381,6 +413,16 @@ int isCollision(const Segment& segment, const Triangle& triangle) {
 		Vector3::Dot(cross12, plane.normal) >= 0.0f &&
 		Vector3::Dot(cross20, plane.normal) >= 0.0f) {
 
+		return true;
+	}
+	return false;
+}
+
+int isCollision(const AABB& aabb1, const AABB& aabb2) {
+	if (
+		(aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
+		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) &&
+		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) {
 		return true;
 	}
 	return false;

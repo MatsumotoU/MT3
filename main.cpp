@@ -23,14 +23,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraTranslate = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Segment segment{ {0.0f,1.0f,0.0f},{0.0f,1.0f,0.0f} };
-	uint32_t segmentColor = WHITE;
-	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,32,WHITE };
-
-	Triangle triangle{};
-	triangle.vertices[0] = { 0.0f,0.5f,0.5f };
-	triangle.vertices[1] = { 0.25f,0.0f,0.0f };
-	triangle.vertices[2] = { -0.25f,0.0f,0.0f };
+	// 図形
+	AABB aabb1 = { {-0.5f,-0.5f,-0.5f}, {0.0f,0.0f,0.0f} };
+	unsigned int aabb1Color = WHITE;
+	AABB aabb2 = { {0.2f,0.2f,0.2f}, {1.0f,1.0f,1.0f} };
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -105,10 +101,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// 当たり判定
-		if (isCollision(segment, triangle)) {
-			segmentColor = RED;
+		if (isCollision(aabb1, aabb2)) {
+			aabb1Color = RED;
 		} else {
-			segmentColor = WHITE;
+			aabb1Color = WHITE;
 		}
 
 		// ImGui
@@ -137,20 +133,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		ImGui::End();
 
-		// 線分の情報
-		ImGui::Begin("SegmentWindow");
-		ImGui::DragFloat3("SegmentOrigine", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.01f);
-		segment.diff = segment.diff.Normalize();
-		ImGui::End();
-
-		// 平面
-		ImGui::Begin("TriangleWindow");
-
-		ImGui::DragFloat3("Triangle.v0", &triangle.vertices[0].x, 0.01f);
-		ImGui::DragFloat3("Triangle.v1", &triangle.vertices[1].x, 0.01f);
-		ImGui::DragFloat3("Triangle.v2", &triangle.vertices[2].x, 0.01f);
-
+		// オブジェクトの情報
+		ImGui::Begin("ObjectWindow");
+		ImGui::DragFloat3("aabb1Max", &aabb1.max.x, 0.01f);
+		ImGui::DragFloat3("aabb1Min", &aabb1.min.x, 0.01f);
+		ImGui::DragFloat3("aabb2Max", &aabb2.max.x, 0.01f);
+		ImGui::DragFloat3("aabb2Min", &aabb2.min.x, 0.01f);
 		ImGui::End();
 
 		///
@@ -162,8 +150,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, WHITE);
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, static_cast<unsigned int>(segmentColor));
+		DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, aabb1Color);
+		DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
