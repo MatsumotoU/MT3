@@ -9,6 +9,12 @@ struct Sphere
 	unsigned int color;
 };
 
+struct AABB
+{
+	Vector3 min;
+	Vector3 max;
+};
+
 struct Plane
 {
 	Vector3 normal; // 法線
@@ -93,9 +99,11 @@ void DrawAxis(int x, int y, int size, const Vector3& cameraRotate);
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2);
 int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
 
 int isCollision(const Segment& segment, const Plane& plane);
 int isCollision(const Segment& segment, const Triangle& triangle);
+int isCollision(const AABB& aabb1, const AABB& aabb2);
