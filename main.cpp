@@ -24,9 +24,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	AABB aabb1 = { {-0.5f,-0.5f,-0.5f}, {0.0f,0.0f,0.0f} };
-	unsigned int aabb1Color = WHITE;
-	AABB aabb2 = { {0.2f,0.2f,0.2f}, {1.0f,1.0f,1.0f} };
+	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,16,WHITE };
+	unsigned int hitColor = WHITE;
+	AABB aabb = { {0.2f,0.2f,0.2f}, {1.0f,1.0f,1.0f} };
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -90,10 +90,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			cursorScale.y += moveSpeed;
 			cursorScale.z += moveSpeed;
 		}
-		Matrix4x4 cursorMatrix = Matrix4x4::MakeAffineMatrix(cursorScale, cursorRotate, cursorTranslate);
+		Matrix4x4 cursorMatrix = Matrix4x4::MakeAffineMatrix(cursorScale, cursorRotate, {0.0f,0.0f,0.0f});
+		Matrix4x4 cursorTransMatrix = Matrix4x4::MakeAffineMatrix({1.0f,1.0f,1.0f}, {0.0f,0.0f,0.0f}, cursorTranslate);
 
 		// ビュープロジェクション行列とビューポート行列
 		Matrix4x4 cameraMatrix = Matrix4x4::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
+		cameraMatrix = Matrix4x4::Multiply(cameraMatrix, cursorTransMatrix);
 		cameraMatrix = Matrix4x4::Multiply(cameraMatrix, cursorMatrix);
 		Matrix4x4 viewMatrix = Matrix4x4::Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = Matrix4x4::MakePerspectiveFovMatrix(0.45f, static_cast<float>(kWindowWidth) / static_cast<float>(kWindowHeight), 0.1f, 100.0f);
@@ -101,10 +103,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// 当たり判定
-		if (isCollision(aabb1, aabb2)) {
-			aabb1Color = RED;
+		if (isCollision(aabb, sphere)) {
+			hitColor = RED;
 		} else {
-			aabb1Color = WHITE;
+			hitColor = WHITE;
 		}
 
 		// ImGui
@@ -135,10 +137,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
-		ImGui::DragFloat3("aabb1Max", &aabb1.max.x, 0.01f);
-		ImGui::DragFloat3("aabb1Min", &aabb1.min.x, 0.01f);
-		ImGui::DragFloat3("aabb2Max", &aabb2.max.x, 0.01f);
-		ImGui::DragFloat3("aabb2Min", &aabb2.min.x, 0.01f);
+		ImGui::DragFloat3("aabb1Max", &aabb.max.x, 0.01f);
+		ImGui::DragFloat3("aabb1Min", &aabb.min.x, 0.01f);
+		ImGui::DragFloat3("sphereCenter", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("sphereRadius", &sphere.radius, 0.01f);
 		ImGui::End();
 
 		///
@@ -150,8 +152,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, aabb1Color);
-		DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawAABB(aabb, viewProjectionMatrix, viewportMatrix, hitColor);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
