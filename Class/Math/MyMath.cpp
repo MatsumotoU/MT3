@@ -172,6 +172,53 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 	}
 }
 
+void DrawAxis(int x, int y, int size, const Vector3& cameraRotate) {
+	Vector3 axes[3]{};
+	axes[0] = { 1.0f,0.0f,0.0f };
+	axes[1] = { 0.0f,-1.0f,0.0f };
+	axes[2] = { 0.0f,0.0f,-1.0f };
+
+	Matrix4x4 cameraRotateMatrix = Matrix4x4::MakeAffineMatrix({1.0f,1.0f,1.0f},{cameraRotate.x,-cameraRotate.y,cameraRotate.z}, {0.0f,0.0f,0.0f});
+	cameraRotateMatrix = Matrix4x4::Inverse(cameraRotateMatrix);
+	for (int32_t index = 0; index < 3; ++index) {
+		axes[index] = Vector3::Transform(axes[index], cameraRotateMatrix) * static_cast<float>(size);
+	}
+
+	Novice::DrawBox(x - (size + 16), y - (size + 16), (size + 16) * 2, (size + 16) * 2, 0.0f, 0x232323AF, kFillModeSolid);
+	Novice::DrawBox(x - (size + 16), y - (size + 16), (size + 16) * 2, (size + 16) * 2, 0.0f, WHITE, kFillModeWireFrame);
+
+	Novice::ScreenPrintf(x + static_cast<int>(axes[0].x), y + static_cast<int>(axes[0].y), "X");
+	Novice::ScreenPrintf(x + static_cast<int>(axes[1].x), y + static_cast<int>(axes[1].y), "Y");
+	Novice::ScreenPrintf(x + static_cast<int>(axes[2].x), y + static_cast<int>(axes[2].y), "Z");
+
+	Novice::DrawLine(
+		x, y,
+		x + static_cast<int>(axes[0].x), y + static_cast<int>(axes[0].y),
+		RED);
+	Novice::DrawLine(
+		x, y,
+		x + static_cast<int>(axes[1].x), y + static_cast<int>(axes[1].y),
+		GREEN);
+	Novice::DrawLine(
+		x, y,
+		x + static_cast<int>(axes[2].x), y + static_cast<int>(axes[2].y),
+		BLUE);
+}
+
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	Vector3 p[3]{};
+	for (int32_t index = 0; index < 3; ++index) {
+		p[index] = Vector3::Transform(Vector3::Transform(triangle.vertices[index], viewProjectionMatrix), viewportMatrix);
+	}
+
+	for (int32_t index = 0; index < 3; ++index) {
+		Novice::DrawLine(
+			static_cast<int>(p[index].x), static_cast<int>(p[index].y),
+			static_cast<int>(p[(index + 1) % 3].x), static_cast<int>(p[(index + 1) % 3].y),
+			static_cast<unsigned int>(color));
+	}
+}
+
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
 
 	assert(sphere.subdivision >= 0);
@@ -294,6 +341,47 @@ int isCollision(const Segment& segment, const Plane& plane) {
 	if (t >= 0.0f && segment.diff.Length() >= t) {
 		return true;
 	}
-	Novice::ScreenPrintf(0, 0, "%f", t);
+	
+	return false;
+}
+
+int isCollision(const Segment& segment, const Triangle& triangle) {
+
+	Vector3 v01 = triangle.vertices[1] - triangle.vertices[0];
+	Vector3 v12 = triangle.vertices[2] - triangle.vertices[1];
+	Vector3 v20 = triangle.vertices[0] - triangle.vertices[2];
+
+	Plane plane{};
+	plane.normal = Vector3::Cross(v01, v12).Normalize();
+	plane.distance = plane.normal.x * triangle.vertices[0].x + plane.normal.y * triangle.vertices[0].y + plane.normal.z * triangle.vertices[0].z;
+
+	// 平面上の当たり判定
+	float dot = Vector3::Dot(plane.normal, segment.diff);
+	// 並行回避
+	if (dot == 0.0f) {
+		return false;
+	}
+	float t = (plane.distance - Vector3::Dot(segment.origin, plane.normal)) / dot;
+	if (t < 0.0f || segment.diff.Length() < t) {
+		return false;
+	}
+
+	Vector3 p = segment.origin + segment.diff * t;
+
+	Vector3 v0p = p - triangle.vertices[0];
+	Vector3 v1p = p - triangle.vertices[1];
+	Vector3 v2p = p - triangle.vertices[2];
+
+	Vector3 cross01 = Vector3::Cross(v01, v1p);
+	Vector3 cross12 = Vector3::Cross(v12, v2p);
+	Vector3 cross20 = Vector3::Cross(v20, v0p);
+
+	if (
+		Vector3::Dot(cross01, plane.normal) >= 0.0f &&
+		Vector3::Dot(cross12, plane.normal) >= 0.0f &&
+		Vector3::Dot(cross20, plane.normal) >= 0.0f) {
+
+		return true;
+	}
 	return false;
 }
