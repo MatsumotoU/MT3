@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,16,WHITE };
+	Segment segment{ {0.0f,0.0f,0.0f},{0.5f,0.5f,0.0f} };
 	unsigned int hitColor = WHITE;
 	AABB aabb = { {0.2f,0.2f,0.2f}, {1.0f,1.0f,1.0f} };
 
@@ -103,7 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// 当たり判定
-		if (isCollision(aabb, sphere)) {
+		if (isCollision(aabb, segment)) {
 			hitColor = RED;
 		} else {
 			hitColor = WHITE;
@@ -139,8 +139,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("ObjectWindow");
 		ImGui::DragFloat3("aabb1Max", &aabb.max.x, 0.01f);
 		ImGui::DragFloat3("aabb1Min", &aabb.min.x, 0.01f);
-		ImGui::DragFloat3("sphereCenter", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("sphereRadius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.01f);
 		ImGui::End();
 
 		///
@@ -153,7 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 		DrawAABB(aabb, viewProjectionMatrix, viewportMatrix, hitColor);
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);

@@ -440,3 +440,54 @@ int isCollision(const AABB& aabb, const Sphere& sphere) {
 	}
 	return false;
 }
+
+int isCollision(const AABB& aabb, const Segment& segment) {
+	Plane plane[6]{};
+	plane[0].normal = { 1.0f,0.0f,0.0f };
+	plane[0].distance = aabb.min.x;
+	plane[1].normal = { 1.0f,0.0f,0.0f };
+	plane[1].distance = aabb.max.x;
+
+	plane[2].normal = { 0.0f,1.0f,0.0f };
+	plane[2].distance = aabb.min.y;
+	plane[3].normal = { 0.0f,1.0f,0.0f };
+	plane[3].distance = aabb.max.y;
+
+	plane[4].normal = { 0.0f,0.0f,1.0f };
+	plane[4].distance = aabb.min.z;
+	plane[5].normal = { 0.0f,0.0f,1.0f };
+	plane[5].distance = aabb.max.z;
+
+	float dot = Vector3::Dot(plane[0].normal, segment.diff);
+	float tXmin = (plane[0].distance - Vector3::Dot(segment.origin, plane[0].normal)) / dot;
+	dot = Vector3::Dot(plane[1].normal, segment.diff);
+	float tXmax = (plane[1].distance - Vector3::Dot(segment.origin, plane[1].normal)) / dot;
+	dot = Vector3::Dot(plane[2].normal, segment.diff);
+	float tYmin = (plane[2].distance - Vector3::Dot(segment.origin, plane[2].normal)) / dot;
+	dot = Vector3::Dot(plane[3].normal, segment.diff);
+	float tYmax = (plane[3].distance - Vector3::Dot(segment.origin, plane[3].normal)) / dot;
+	dot = Vector3::Dot(plane[4].normal, segment.diff);
+	float tZmin = (plane[4].distance - Vector3::Dot(segment.origin, plane[4].normal)) / dot;
+	dot = Vector3::Dot(plane[5].normal, segment.diff);
+	float tZmax = (plane[5].distance - Vector3::Dot(segment.origin, plane[5].normal)) / dot;
+
+	float tNearX = min(tXmin, tXmax);
+	float tFarX = max(tXmin, tXmax);
+	float tNearY = min(tYmin, tYmax);
+	float tFarY = max(tYmin, tYmax);
+	float tNearZ = min(tZmin, tZmax);
+	float tFarZ = max(tZmin, tZmax);
+
+	float tmin = max(max(tNearX,tNearY), tNearZ);
+	float tmax = min(min(tFarX, tFarY), tFarZ);
+	if (tmin <= tmax) {
+		if (tmin >= 0.0f && segment.diff.Length() >= tmin ||
+			tmax >= 0.0f && segment.diff.Length() >= tmax) {
+			return true;
+		} else {
+			AABB hitBox{ segment.origin,segment.origin + segment.diff };
+			return isCollision(hitBox, aabb);
+		}
+	}
+	return false;
+}
