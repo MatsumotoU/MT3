@@ -552,3 +552,22 @@ int isCollision(const OBB& obb, const Sphere& sphere) {
 	Sphere sphereOBBLocal{ centerInOBBLocalSpace ,sphere.radius,16,WHITE };
 	return isCollision(aabbOBBLocal,sphereOBBLocal);
 }
+
+int isCollision(const OBB& obb, const Segment& segment) {
+	Matrix4x4 rotateMatrix{};
+	rotateMatrix.m[3][3] = 1.0f;
+	for (int32_t index = 0; index < 3; ++index) {
+		rotateMatrix.m[index][0] = obb.orientations[index].x;
+		rotateMatrix.m[index][1] = obb.orientations[index].y;
+		rotateMatrix.m[index][2] = obb.orientations[index].z;
+	}
+	Matrix4x4 transformMatrix = Matrix4x4::MakeTranslateMatrix(obb.center);
+	Matrix4x4 obbWorldMatrix = Matrix4x4::Multiply(rotateMatrix, transformMatrix);
+
+	Matrix4x4 obbWorldMatrixInvers = Matrix4x4::Inverse(obbWorldMatrix);
+	Vector3 origineInOBBLocalSpace = Vector3::Transform(segment.origin, obbWorldMatrixInvers);
+
+	AABB aabbOBBLocal{ -obb.size,obb.size };
+	Segment segmentOBBLocal{ origineInOBBLocalSpace ,segment.diff };
+	return isCollision(aabbOBBLocal, segmentOBBLocal);
+}
