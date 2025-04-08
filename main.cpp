@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,16,WHITE };
+	Segment segment{ {1.0f,0.0f,0.0f},{0.5f,0.5f,0.0f} };
 	unsigned int hitColor = WHITE;
 	Vector3 rotate{};
 	OBB obb = {
@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 当たり判定
-		if (isCollision(obb, sphere)) {
+		if (isCollision(obb, segment)) {
 			hitColor = RED;
 		} else {
 			hitColor = WHITE;
@@ -153,8 +153,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("ObbCenter", &obb.center.x, 0.01f);
 		ImGui::DragFloat3("ObbRotate", &rotate.x, 0.01f);
 		ImGui::DragFloat3("ObbSize", &obb.size.x, 0.01f);
-		ImGui::DragFloat3("sphereCenter", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("sphereRadius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("segmentOrigine", &segment.origin.x, 0.01f);
+		ImGui::DragFloat("segmentDiff", &segment.diff.x, 0.01f);
 		ImGui::End();
 
 		///
@@ -166,8 +166,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, WHITE);
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, hitColor);
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, hitColor);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
