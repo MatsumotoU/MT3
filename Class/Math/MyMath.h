@@ -17,6 +17,13 @@ struct AABB
 	Vector3 max;
 };
 
+struct OBB
+{
+	Vector3 center;
+	Vector3 orientations[3];
+	Vector3 size;
+};
+
 struct Plane
 {
 	Vector3 normal; // 法線
@@ -102,6 +109,7 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2);
 int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
@@ -111,3 +119,4 @@ int isCollision(const Segment& segment, const Triangle& triangle);
 int isCollision(const AABB& aabb1, const AABB& aabb2);
 int isCollision(const AABB& aabb, const Sphere& sphere);
 int isCollision(const AABB& aabb, const Segment& segment);
+int isCollision(const OBB& obb, const Sphere& sphere);

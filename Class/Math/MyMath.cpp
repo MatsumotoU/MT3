@@ -112,12 +112,12 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 
 	// 奥から手前への線を順々に引いていく
 	for (uint32_t xIndex = 0; xIndex <= kSubdivision; ++xIndex) {
-		Vector3 beginPos{ 
+		Vector3 beginPos{
 			-kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) ,
 			0.0f,
 			kGridEvery * static_cast<float>(xIndex) - kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) };
 
-		Vector3 endPos{ 
+		Vector3 endPos{
 			kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) ,
 			0.0f,
 			kGridEvery * static_cast<float>(xIndex) - kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) };
@@ -128,7 +128,7 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 		ndcVertex = Vector3::Transform(endPos, viewProjectionMatrix);
 		endPos = Vector3::Transform(ndcVertex, viewportMatrix);
 
-		if (xIndex == kSubdivision/2) {
+		if (xIndex == kSubdivision / 2) {
 			Novice::DrawLine(
 				static_cast<int>(beginPos.x), static_cast<int>(beginPos.y),
 				static_cast<int>(endPos.x), static_cast<int>(endPos.y),
@@ -140,15 +140,15 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 				0xAAAAAAFF);
 		}
 	}
-	
+
 	// 左から右への線を順々に引いていく
 	for (uint32_t zIndex = 0; zIndex <= kSubdivision; ++zIndex) {
-		Vector3 beginPos{ 
-			kGridEvery * static_cast<float>(zIndex)  - kGridEvery * (static_cast<float>(kSubdivision) / 2.0f),
+		Vector3 beginPos{
+			kGridEvery * static_cast<float>(zIndex) - kGridEvery * (static_cast<float>(kSubdivision) / 2.0f),
 			0.0f,
 			kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) };
 
-		Vector3 endPos{ 
+		Vector3 endPos{
 			kGridEvery * static_cast<float>(zIndex) - kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) ,
 			0.0f,
 			-kGridEvery * (static_cast<float>(kSubdivision) / 2.0f) };
@@ -179,7 +179,7 @@ void DrawAxis(int x, int y, int size, const Vector3& cameraRotate) {
 	axes[1] = { 0.0f,-1.0f,0.0f };
 	axes[2] = { 0.0f,0.0f,-1.0f };
 
-	Matrix4x4 cameraRotateMatrix = Matrix4x4::MakeAffineMatrix({1.0f,1.0f,1.0f},{cameraRotate.x,-cameraRotate.y,cameraRotate.z}, {0.0f,0.0f,0.0f});
+	Matrix4x4 cameraRotateMatrix = Matrix4x4::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { cameraRotate.x,-cameraRotate.y,cameraRotate.z }, { 0.0f,0.0f,0.0f });
 	cameraRotateMatrix = Matrix4x4::Inverse(cameraRotateMatrix);
 	for (int32_t index = 0; index < 3; ++index) {
 		axes[index] = Vector3::Transform(axes[index], cameraRotateMatrix) * static_cast<float>(size);
@@ -239,14 +239,14 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 			float nextLot = pi / static_cast<float>(kSubdivision) * 2.0f;
 
 			Vector3 a{}, b{}, c{};
-			a = { 
+			a = {
 				cosf(lot) * cosf(lat),
 				sinf(lot),
 				cosf(lot) * sinf(lat) };
-			b = { 
+			b = {
 				cosf(lot + nextLot) * cosf(lat),
 				sinf(lot + nextLot),
-				cosf(lot + nextLot) * sinf(lat)};
+				cosf(lot + nextLot) * sinf(lat) };
 			c = {
 				cosf(lot) * cosf(lat + nextLat),
 				sinf(lot),
@@ -314,7 +314,7 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 		static_cast<int>(points[1].x), static_cast<int>(points[1].y),
 		static_cast<unsigned int>(color));
 
-	
+
 }
 
 void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
@@ -323,13 +323,55 @@ void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Mat
 	p[1] = { aabb.min.x,aabb.max.y,aabb.min.z };
 	p[2] = { aabb.min.x,aabb.max.y,aabb.max.z };
 	p[3] = { aabb.min.x,aabb.min.y,aabb.max.z };
-	
+
 	p[4] = { aabb.max.x,aabb.min.y,aabb.min.z };
 	p[5] = { aabb.max.x,aabb.max.y,aabb.min.z };
 	p[6] = aabb.max;
 	p[7] = { aabb.max.x,aabb.min.y,aabb.max.z };
 
 	for (int32_t index = 0; index < 8; ++index) {
+		p[index] = Vector3::Transform(Vector3::Transform(p[index], viewProjectionMatrix), viewportMatrix);
+	}
+
+	for (int32_t index = 0; index < 4; ++index) {
+		Novice::DrawLine(
+			static_cast<int>(p[index].x), static_cast<int>(p[index].y),
+			static_cast<int>(p[(index + 1) % 4].x), static_cast<int>(p[(index + 1) % 4].y),
+			static_cast<unsigned int>(color));
+		Novice::DrawLine(
+			static_cast<int>(p[index + 4].x), static_cast<int>(p[index + 4].y),
+			static_cast<int>(p[(index + 1) % 4 + 4].x), static_cast<int>(p[(index + 1) % 4 + 4].y),
+			static_cast<unsigned int>(color));
+		Novice::DrawLine(
+			static_cast<int>(p[index].x), static_cast<int>(p[index].y),
+			static_cast<int>(p[(index + 4)].x), static_cast<int>(p[(index + 4)].y),
+			static_cast<unsigned int>(color));
+	}
+}
+
+void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	Matrix4x4 rotateMatrix{};
+	rotateMatrix.m[3][3] = 1.0f;
+	for (int32_t index = 0; index < 3; ++index) {
+		rotateMatrix.m[index][0] = obb.orientations[index].x;
+		rotateMatrix.m[index][1] = obb.orientations[index].y;
+		rotateMatrix.m[index][2] = obb.orientations[index].z;
+	}
+	Matrix4x4 transformMatrix = Matrix4x4::MakeTranslateMatrix(obb.center);
+
+	Vector3 p[8]{};
+	p[0] = -obb.size;
+	p[1] = { -obb.size.x, +obb.size.y, -obb.size.z };
+	p[2] = { -obb.size.x, +obb.size.y, +obb.size.z };
+	p[3] = { -obb.size.x, -obb.size.y, +obb.size.z };
+
+	p[4] = { +obb.size.x, -obb.size.y, -obb.size.z };
+	p[5] = { +obb.size.x, +obb.size.y, -obb.size.z };
+	p[6] = obb.size;
+	p[7] = { +obb.size.x, -obb.size.y, +obb.size.z };
+
+	for (int32_t index = 0; index < 8; ++index) {
+		p[index] = Vector3::Transform(Vector3::Transform(p[index], rotateMatrix), transformMatrix);
 		p[index] = Vector3::Transform(Vector3::Transform(p[index], viewProjectionMatrix), viewportMatrix);
 	}
 
@@ -374,7 +416,7 @@ int isCollision(const Segment& segment, const Plane& plane) {
 	if (t >= 0.0f && segment.diff.Length() >= t) {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -478,7 +520,7 @@ int isCollision(const AABB& aabb, const Segment& segment) {
 	float tNearZ = min(tZmin, tZmax);
 	float tFarZ = max(tZmin, tZmax);
 
-	float tmin = max(max(tNearX,tNearY), tNearZ);
+	float tmin = max(max(tNearX, tNearY), tNearZ);
 	float tmax = min(min(tFarX, tFarY), tFarZ);
 	if (tmin <= tmax) {
 		if (tmin >= 0.0f && segment.diff.Length() >= tmin ||
@@ -490,4 +532,23 @@ int isCollision(const AABB& aabb, const Segment& segment) {
 		}
 	}
 	return false;
+}
+
+int isCollision(const OBB& obb, const Sphere& sphere) {
+	Matrix4x4 rotateMatrix{};
+	rotateMatrix.m[3][3] = 1.0f;
+	for (int32_t index = 0; index < 3; ++index) {
+		rotateMatrix.m[index][0] = obb.orientations[index].x;
+		rotateMatrix.m[index][1] = obb.orientations[index].y;
+		rotateMatrix.m[index][2] = obb.orientations[index].z;
+	}
+	Matrix4x4 transformMatrix = Matrix4x4::MakeTranslateMatrix(obb.center);
+	Matrix4x4 obbWorldMatrix = Matrix4x4::Multiply(rotateMatrix, transformMatrix);
+
+	Matrix4x4 obbWorldMatrixInvers = Matrix4x4::Inverse(obbWorldMatrix);
+	Vector3 centerInOBBLocalSpace = Vector3::Transform(sphere.center, obbWorldMatrixInvers);
+
+	AABB aabbOBBLocal{ -obb.size,obb.size };
+	Sphere sphereOBBLocal{ centerInOBBLocalSpace ,sphere.radius,16,WHITE };
+	return isCollision(aabbOBBLocal,sphereOBBLocal);
 }
