@@ -24,9 +24,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Segment segment{ {0.0f,0.0f,0.0f},{0.5f,0.5f,0.0f} };
+	Sphere sphere{ {0.0f,0.0f,0.0f},1.0f,16,WHITE };
 	unsigned int hitColor = WHITE;
-	AABB aabb = { {0.2f,0.2f,0.2f}, {1.0f,1.0f,1.0f} };
+	Vector3 rotate{};
+	OBB obb = {
+		{-1.0f,0.0f,0.0f},
+		{{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f}},
+		{0.5f,0.5f,0.5f}
+	};
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -102,8 +107,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = Matrix4x4::MakeViewportMatrix(0, 0, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
+		// OBBの軸生成
+		Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateXYZMatrix(rotate);
+		for (int32_t index = 0; index < 3; ++index) {
+			obb.orientations[index].x = rotateMatrix.m[index][0];
+			obb.orientations[index].y = rotateMatrix.m[index][1];
+			obb.orientations[index].z = rotateMatrix.m[index][2];
+		}
+
 		// 当たり判定
-		if (isCollision(aabb, segment)) {
+		if (isCollision(obb, sphere)) {
 			hitColor = RED;
 		} else {
 			hitColor = WHITE;
@@ -137,10 +150,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
-		ImGui::DragFloat3("aabb1Max", &aabb.max.x, 0.01f);
-		ImGui::DragFloat3("aabb1Min", &aabb.min.x, 0.01f);
-		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.01f);
-		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.01f);
+		ImGui::DragFloat3("ObbCenter", &obb.center.x, 0.01f);
+		ImGui::DragFloat3("ObbRotate", &rotate.x, 0.01f);
+		ImGui::DragFloat3("ObbSize", &obb.size.x, 0.01f);
+		ImGui::DragFloat3("sphereCenter", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("sphereRadius", &sphere.radius, 0.01f);
 		ImGui::End();
 
 		///
@@ -152,8 +166,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawAABB(aabb, viewProjectionMatrix, viewportMatrix, hitColor);
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, hitColor);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
