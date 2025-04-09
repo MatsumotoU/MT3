@@ -25,21 +25,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Vector3 translates[3] = {
-		{0.2f,1.0f,0.0f},
-		{0.4f,0.0f,0.0f},
-		{0.3f,0.0f,0.0f}
-	};
-	Vector3 rotates[3] = {
-		{0.0f,0.0f,-6.8f},
-		{0.4f,0.0f,-1.4f},
-		{0.3f,0.0f,0.0f}
-	};
-	Vector3 scales[3] = {
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f}
-	};
+	Vector3 a{ 0.2f,1.0f,0.0f };
+	Vector3 b{ 2.4f,3.1f,1.2f };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Matrix4x4 rotateXMatrix = Matrix4x4::MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = Matrix4x4::MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = Matrix4x4::MakeRotateZMatrix(rotate.z);
+	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -116,26 +111,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// オブジェクト操作
-		Matrix4x4 shoulderMatrix = Matrix4x4::MakeAffineMatrix(scales[0], rotates[0], translates[0]);
-		Matrix4x4 elbowMatrix = Matrix4x4::Multiply(Matrix4x4::MakeAffineMatrix(scales[1], rotates[1], translates[1]), shoulderMatrix);
-		Matrix4x4 handMatrix = Matrix4x4::Multiply(Matrix4x4::MakeAffineMatrix(scales[2], rotates[2], translates[2]), elbowMatrix);
-
-		Sphere shoulder{};
-		Sphere elbow{};
-		Sphere hand{};
 		
-		shoulder.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, shoulderMatrix);
-		elbow.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, elbowMatrix);
-		hand.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, handMatrix);
-
-		for (int i = 0; i < 3; ++i) {
-			shoulder.radius = 0.1f;
-			shoulder.subdivision = 16;
-			elbow.radius = 0.1f;
-			elbow.subdivision = 16;
-			hand.radius = 0.1f;
-			hand.subdivision = 16;
-		}
 
 		// ImGui
 		ImGui::Begin("OpWindow");
@@ -166,17 +142,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
 
-		ImGui::DragFloat3("sholderTranslate", &translates[0].x,0.1f);
-		ImGui::DragFloat3("sholderRotate", &rotates[0].x, 0.1f);
-		ImGui::DragFloat3("sholderScale", &scales[0].x, 0.1f);
-
-		ImGui::DragFloat3("elbowTranslate", &translates[1].x, 0.1f);
-		ImGui::DragFloat3("elbowRotate", &rotates[1].x, 0.1f);
-		ImGui::DragFloat3("elbowScale", &scales[1].x, 0.1f);
-
-		ImGui::DragFloat3("handTranslate", &translates[2].x, 0.1f);
-		ImGui::DragFloat3("handRotate", &rotates[2].x, 0.1f);
-		ImGui::DragFloat3("handScale", &scales[2].x, 0.1f);
+		ImGui::Text("c:%f, %f, %f", c.x, c.y, c.z);
+		ImGui::Text("d:%f, %f, %f", d.x, d.y, d.z);
+		ImGui::Text("e:%f, %f, %f", e.x, e.y, e.z);
+		ImGui::Text("Matrix:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", 
+			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
+			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3], 
+			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3], 
+			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
 
 		ImGui::End();
 
@@ -189,17 +162,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSphere(shoulder, viewProjectionMatrix, viewportMatrix,RED);
-		DrawSphere(elbow, viewProjectionMatrix, viewportMatrix, GREEN);
-		DrawSphere(hand, viewProjectionMatrix, viewportMatrix, BLUE);
-
-		Segment segment{};
-		segment.origin = shoulder.center;
-		segment.diff = elbow.center - shoulder.center;
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
-		segment.origin = elbow.center;
-		segment.diff = hand.center - elbow.center;
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
