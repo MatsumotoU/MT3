@@ -25,13 +25,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	std::vector<Vector3> controlPoints;
-	controlPoints.clear();
-	controlPoints.push_back({ 0.0f,0.0f,0.0f });
-	controlPoints.push_back({ 0.5f,0.0f,0.0f });
-	controlPoints.push_back({ 0.5f,0.5f,0.0f });
-	controlPoints.push_back({ 0.5f,0.5f,0.5f });
-	float t = 0.0f;
+	Vector3 translates[3] = {
+		{0.2f,1.0f,0.0f},
+		{0.4f,0.0f,0.0f},
+		{0.3f,0.0f,0.0f}
+	};
+	Vector3 rotates[3] = {
+		{0.0f,0.0f,-6.8f},
+		{0.4f,0.0f,-1.4f},
+		{0.3f,0.0f,0.0f}
+	};
+	Vector3 scales[3] = {
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f}
+	};
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -107,6 +115,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = Matrix4x4::MakeViewportMatrix(0, 0, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
+		// オブジェクト操作
+		Matrix4x4 shoulderMatrix = Matrix4x4::MakeAffineMatrix(scales[0], rotates[0], translates[0]);
+		Matrix4x4 elbowMatrix = Matrix4x4::Multiply(Matrix4x4::MakeAffineMatrix(scales[1], rotates[1], translates[1]), shoulderMatrix);
+		Matrix4x4 handMatrix = Matrix4x4::Multiply(Matrix4x4::MakeAffineMatrix(scales[2], rotates[2], translates[2]), elbowMatrix);
+
+		Sphere shoulder{};
+		Sphere elbow{};
+		Sphere hand{};
+		
+		shoulder.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, shoulderMatrix);
+		elbow.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, elbowMatrix);
+		hand.center = Vector3::Transform({ 0.0f,0.0f,0.0f }, handMatrix);
+
+		for (int i = 0; i < 3; ++i) {
+			shoulder.radius = 0.1f;
+			shoulder.subdivision = 16;
+			elbow.radius = 0.1f;
+			elbow.subdivision = 16;
+			hand.radius = 0.1f;
+			hand.subdivision = 16;
+		}
+
 		// ImGui
 		ImGui::Begin("OpWindow");
 		if (ImGui::TreeNode("Camera")) {
@@ -136,24 +166,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
 
-		ImGui::DragFloat("t", &t,0.01f);
-		if (ImGui::Button("AddControlPoint")) {
-			controlPoints.push_back({ 0.0f,0.0f,0.0f });
-		}
+		ImGui::DragFloat3("sholderTranslate", &translates[0].x,0.1f);
+		ImGui::DragFloat3("sholderRotate", &rotates[0].x, 0.1f);
+		ImGui::DragFloat3("sholderScale", &scales[0].x, 0.1f);
 
-		if (ImGui::Button("DeleteControlPoint")) {
-			controlPoints.pop_back();
-		}
+		ImGui::DragFloat3("elbowTranslate", &translates[1].x, 0.1f);
+		ImGui::DragFloat3("elbowRotate", &rotates[1].x, 0.1f);
+		ImGui::DragFloat3("elbowScale", &scales[1].x, 0.1f);
 
-		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(410, 100), ImGuiWindowFlags_NoTitleBar);
-
-		for (int i = 0; i < controlPoints.size(); i++) {
-			char name[] = "controlPoints[0]";
-			name[14] = static_cast<char>(i);
-			ImGui::DragFloat3(name, &controlPoints[i].x, 0.01f);
-		}
-
-		ImGui::EndChild();
+		ImGui::DragFloat3("handTranslate", &translates[2].x, 0.1f);
+		ImGui::DragFloat3("handRotate", &rotates[2].x, 0.1f);
+		ImGui::DragFloat3("handScale", &scales[2].x, 0.1f);
 
 		ImGui::End();
 
@@ -166,21 +189,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawCatmullRom(controlPoints, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere(shoulder, viewProjectionMatrix, viewportMatrix,RED);
+		DrawSphere(elbow, viewProjectionMatrix, viewportMatrix, GREEN);
+		DrawSphere(hand, viewProjectionMatrix, viewportMatrix, BLUE);
 
-		for (int i = 0; i < static_cast<int>(controlPoints.size()); ++i) {
-			Sphere sphere{};
-			sphere.center = controlPoints[i];
-			sphere.radius = 0.01f;
-			sphere.subdivision = 16;
-			DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, RED);
-		}
-
-		Sphere sphere{};
-		sphere.center = Vector3::CatmullRom(controlPoints,t);
-		sphere.radius = 0.1f;
-		sphere.subdivision = 16;
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, BLACK);
+		Segment segment{};
+		segment.origin = shoulder.center;
+		segment.diff = elbow.center - shoulder.center;
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
+		segment.origin = elbow.center;
+		segment.diff = hand.center - elbow.center;
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
