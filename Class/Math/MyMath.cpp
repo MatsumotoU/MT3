@@ -571,3 +571,100 @@ int isCollision(const OBB& obb, const Segment& segment) {
 	Segment segmentOBBLocal{ origineInOBBLocalSpace ,segment.diff };
 	return isCollision(aabbOBBLocal, segmentOBBLocal);
 }
+
+int isCollision(const OBB& obb1, const OBB& obb2) {
+	// 分離軸の候補を探す
+	Vector3 separatingAxisCandidates[15]{};
+	separatingAxisCandidates[0] = obb1.orientations[0];
+	separatingAxisCandidates[1] = obb1.orientations[1];
+	separatingAxisCandidates[2] = obb1.orientations[2];
+	separatingAxisCandidates[3] = obb2.orientations[0];
+	separatingAxisCandidates[4] = obb2.orientations[1];
+	separatingAxisCandidates[5] = obb2.orientations[2];
+	separatingAxisCandidates[6] = Vector3::Cross(obb1.orientations[0], obb2.orientations[0]);
+	separatingAxisCandidates[7] = Vector3::Cross(obb1.orientations[0], obb2.orientations[1]);
+	separatingAxisCandidates[8] = Vector3::Cross(obb1.orientations[0], obb2.orientations[2]);
+	separatingAxisCandidates[9] = Vector3::Cross(obb1.orientations[1], obb2.orientations[0]);
+	separatingAxisCandidates[10] = Vector3::Cross(obb1.orientations[1], obb2.orientations[1]);
+	separatingAxisCandidates[11] = Vector3::Cross(obb1.orientations[1], obb2.orientations[2]);
+	separatingAxisCandidates[12] = Vector3::Cross(obb1.orientations[2], obb2.orientations[0]);
+	separatingAxisCandidates[13] = Vector3::Cross(obb1.orientations[2], obb2.orientations[1]);
+	separatingAxisCandidates[14] = Vector3::Cross(obb1.orientations[2], obb2.orientations[2]);
+
+	// obb1の各頂点
+	Matrix4x4 rotateMatrix{};
+	rotateMatrix.m[3][3] = 1.0f;
+	for (int32_t index = 0; index < 3; ++index) {
+		rotateMatrix.m[index][0] = obb1.orientations[index].x;
+		rotateMatrix.m[index][1] = obb1.orientations[index].y;
+		rotateMatrix.m[index][2] = obb1.orientations[index].z;
+	}
+	Matrix4x4 transformMatrix = Matrix4x4::MakeTranslateMatrix(obb1.center);
+	Vector3 p1[8]{};
+	p1[0] = -obb1.size;
+	p1[1] = { -obb1.size.x, +obb1.size.y, -obb1.size.z };
+	p1[2] = { -obb1.size.x, +obb1.size.y, +obb1.size.z };
+	p1[3] = { -obb1.size.x, -obb1.size.y, +obb1.size.z };
+	p1[4] = { +obb1.size.x, -obb1.size.y, -obb1.size.z };
+	p1[5] = { +obb1.size.x, +obb1.size.y, -obb1.size.z };
+	p1[6] = obb1.size;
+	p1[7] = { +obb1.size.x, -obb1.size.y, +obb1.size.z };
+	for (int32_t index = 0; index < 8; ++index) {
+		p1[index] = Vector3::Transform(Vector3::Transform(p1[index], rotateMatrix), transformMatrix);
+	}
+	// obb2の各頂点
+	Matrix4x4 rotateMatrix2{};
+	rotateMatrix2.m[3][3] = 1.0f;
+	for (int32_t index = 0; index < 3; ++index) {
+		rotateMatrix2.m[index][0] = obb2.orientations[index].x;
+		rotateMatrix2.m[index][1] = obb2.orientations[index].y;
+		rotateMatrix2.m[index][2] = obb2.orientations[index].z;
+	}
+	Matrix4x4 transformMatrix2 = Matrix4x4::MakeTranslateMatrix(obb2.center);
+	Vector3 p2[8]{};
+	p2[0] = -obb2.size;
+	p2[1] = { -obb2.size.x, +obb2.size.y, -obb2.size.z };
+	p2[2] = { -obb2.size.x, +obb2.size.y, +obb2.size.z };
+	p2[3] = { -obb2.size.x, -obb2.size.y, +obb2.size.z };
+	p2[4] = { +obb2.size.x, -obb2.size.y, -obb2.size.z };
+	p2[5] = { +obb2.size.x, +obb2.size.y, -obb2.size.z };
+	p2[6] = obb2.size;
+	p2[7] = { +obb2.size.x, -obb2.size.y, +obb2.size.z };
+	for (int32_t index = 0; index < 8; ++index) {
+		p2[index] = Vector3::Transform(Vector3::Transform(p2[index], rotateMatrix2), transformMatrix2);
+	}
+
+	// 分離軸に対して投影して判定
+	for (int32_t axisIndex = 0; axisIndex < 15; ++axisIndex) {
+		float obb1P[8]{};
+		float obb1Max = 0.0f;
+		float obb1Min = 0.0f;
+		float obb2P[8]{};
+		float obb2Max = 0.0f;
+		float obb2Min = 0.0f;
+		for (int32_t index = 0; index < 8; ++index) {
+			obb1P[index] = Vector3::Dot(separatingAxisCandidates[axisIndex], p1[index]);
+			obb1Max = max(obb1P[index], obb1Max);
+			obb1Min = min(obb1P[index], obb1Min);
+			obb2P[index] = Vector3::Dot(separatingAxisCandidates[axisIndex], p2[index]);
+			obb2Max = max(obb2P[index], obb2Max);
+			obb2Min = min(obb2P[index], obb2Min);
+		}
+
+		Vector2 axis = { cosf(obb1Max),sinf(obb1Max) };
+
+		float L1 = obb1Max - obb1Min;
+		float L2 = obb2Max - obb2Min;
+		Novice::ScreenPrintf(0,20+ 20 * axisIndex, "L1 = %.3f L2 = %.3f", L1,L2);
+
+		float sumSpan = L1 + L2;
+		float longSpan = max(obb1Max, obb2Max) - min(obb1Min, obb2Min);
+		Novice::ScreenPrintf(400, 20 + 20 * axisIndex, "sumSpan = %.3f < longSpan = %.3f", sumSpan, longSpan);
+		// 1つでも分離しているなら当たっていない
+		if (sumSpan < longSpan) {
+			Novice::ScreenPrintf(0, 0, "false = %d", axisIndex);
+			return false;
+		}
+	}
+	return true;
+}

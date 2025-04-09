@@ -33,6 +33,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0.5f,0.5f,0.5f}
 	};
 
+	Vector3 rotate1{};
+	OBB obb1 = {
+		{1.0f,1.0f,0.0f},
+		{{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f}},
+		{0.5f,0.5f,0.5f}
+	};
+
 	// マウス操作用
 	Vector3 cursorTranslate{};
 	Vector3 cursorRotate{};
@@ -115,8 +122,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			obb.orientations[index].z = rotateMatrix.m[index][2];
 		}
 
+		rotateMatrix = Matrix4x4::MakeRotateXYZMatrix(rotate1);
+		for (int32_t index = 0; index < 3; ++index) {
+			obb1.orientations[index].x = rotateMatrix.m[index][0];
+			obb1.orientations[index].y = rotateMatrix.m[index][1];
+			obb1.orientations[index].z = rotateMatrix.m[index][2];
+		}
+
 		// 当たり判定
-		if (isCollision(obb, segment)) {
+		if (isCollision(obb, obb1)) {
 			hitColor = RED;
 		} else {
 			hitColor = WHITE;
@@ -153,8 +167,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("ObbCenter", &obb.center.x, 0.01f);
 		ImGui::DragFloat3("ObbRotate", &rotate.x, 0.01f);
 		ImGui::DragFloat3("ObbSize", &obb.size.x, 0.01f);
-		ImGui::DragFloat3("segmentOrigine", &segment.origin.x, 0.01f);
-		ImGui::DragFloat("segmentDiff", &segment.diff.x, 0.01f);
+
+		ImGui::DragFloat3("Obb1Center", &obb1.center.x, 0.01f);
+		ImGui::DragFloat3("Obb1Rotate", &rotate1.x, 0.01f);
+		ImGui::DragFloat3("Obb1Size", &obb1.size.x, 0.01f);
+
 		ImGui::End();
 
 		///
@@ -166,8 +183,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, hitColor);
+		DrawOBB(obb1, viewProjectionMatrix, viewportMatrix, hitColor);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
