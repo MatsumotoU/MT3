@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 // 前方宣言
 class Matrix4x4;
@@ -82,6 +83,8 @@ public:
 	/// <param name="t">媒介変数</param>
 	/// <returns>ベジェ曲線</returns>
 	[[nodiscard]] static Vector3 BezierCurve(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t);
+
+	[[nodiscard]] static Vector3 CatmullRom(const std::vector<Vector3>& controlPoints, float t);
 
 public:
 	/// <summary>

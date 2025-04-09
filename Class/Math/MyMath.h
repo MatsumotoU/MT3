@@ -110,6 +110,7 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawBezier(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawCatmullRom(const std::vector<Vector3>& controlPoints, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2);
 int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
