@@ -1,5 +1,6 @@
 #include <Novice.h>
 #include <imgui.h>
+#include <string>
 #include "Class/Math/MyMath.h"
 
 const char kWindowTitle[] = "LE2A_14_マツモトユウタ_曲線再び";
@@ -24,10 +25,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Vector3 controlPoints[3]{};
-	controlPoints[0] = { -0.8f,0.58f,1.0f };
-	controlPoints[1] = { -1.76f,1.0f,-0.3f };
-	controlPoints[2] = { 0.94f,-0.7f,2.3f };
+	std::vector<Vector3> controlPoints;
+	controlPoints.clear();
+	controlPoints.push_back({ 0.0f,0.0f,0.0f });
+	controlPoints.push_back({ 0.5f,0.0f,0.0f });
+	controlPoints.push_back({ 0.5f,0.5f,0.0f });
+	controlPoints.push_back({ 0.5f,0.5f,0.5f });
+	float t = 0.0f;
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -132,9 +136,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
 
-		ImGui::DragFloat3("controlPoint[0]", &controlPoints[0].x, 0.01f);
-		ImGui::DragFloat3("controlPoint[1]", &controlPoints[1].x, 0.01f);
-		ImGui::DragFloat3("controlPoint[2]", &controlPoints[2].x, 0.01f);
+		ImGui::DragFloat("t", &t,0.01f);
+		if (ImGui::Button("AddControlPoint")) {
+			controlPoints.push_back({ 0.0f,0.0f,0.0f });
+		}
+
+		if (ImGui::Button("DeleteControlPoint")) {
+			controlPoints.pop_back();
+		}
+
+		ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(410, 100), ImGuiWindowFlags_NoTitleBar);
+
+		for (int i = 0; i < controlPoints.size(); i++) {
+			char name[] = "controlPoints[0]";
+			name[14] = static_cast<char>(i);
+			ImGui::DragFloat3(name, &controlPoints[i].x, 0.01f);
+		}
+
+		ImGui::EndChild();
 
 		ImGui::End();
 
@@ -147,7 +166,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawBezier(controlPoints[0], controlPoints[1], controlPoints[2], viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawCatmullRom(controlPoints, viewProjectionMatrix, viewportMatrix, WHITE);
+
+		for (int i = 0; i < static_cast<int>(controlPoints.size()); ++i) {
+			Sphere sphere{};
+			sphere.center = controlPoints[i];
+			sphere.radius = 0.01f;
+			sphere.subdivision = 16;
+			DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, RED);
+		}
+
+		Sphere sphere{};
+		sphere.center = Vector3::CatmullRom(controlPoints,t);
+		sphere.radius = 0.1f;
+		sphere.subdivision = 16;
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, BLACK);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);

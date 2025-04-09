@@ -417,6 +417,22 @@ void DrawBezier(const Vector3& v1, const Vector3& v2, const Vector3& v3, const M
 #endif
 }
 
+void DrawCatmullRom(const std::vector<Vector3>& controlPoints, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	float subdivision = 0.01f;
+	for (float t = 0.0f; t < 1.0f; t += subdivision) {
+		Vector3 beginPoint = Vector3::CatmullRom(controlPoints, t);
+		Vector3 endPoint = Vector3::CatmullRom(controlPoints, t + subdivision);
+		beginPoint = Vector3::Transform(Vector3::Transform(beginPoint, viewProjectionMatrix), viewportMatrix);
+		endPoint = Vector3::Transform(Vector3::Transform(endPoint, viewProjectionMatrix), viewportMatrix);
+		Novice::DrawLine(
+			static_cast<int>(beginPoint.x), static_cast<int>(beginPoint.y),
+			static_cast<int>(endPoint.x), static_cast<int>(endPoint.y),
+			static_cast<unsigned int>(color));
+
+		//Novice::DrawEllipse(static_cast<int>(beginPoint.x), static_cast<int>(beginPoint.y), 5, 5, 0.0f, WHITE, kFillModeSolid);
+	}
+}
+
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2) {
 	if ((sphere1.center - sphere2.center).Length() <= sphere1.radius + sphere2.radius) {
 		return true;
