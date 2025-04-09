@@ -391,6 +391,32 @@ void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix
 	}
 }
 
+void DrawBezier(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
+	for (float t = 0.0f; t < 1.0f; t += 0.1f) {
+		Vector3 beginPoint = Vector3::BezierCurve(v1, v2, v3, t);
+		Vector3 endPoint = Vector3::BezierCurve(v1, v2, v3, t+0.1f);
+		beginPoint = Vector3::Transform(Vector3::Transform(beginPoint, viewProjectionMatrix), viewportMatrix);
+		endPoint = Vector3::Transform(Vector3::Transform(endPoint, viewProjectionMatrix), viewportMatrix);
+		Novice::DrawLine(
+			static_cast<int>(beginPoint.x), static_cast<int>(beginPoint.y),
+			static_cast<int>(endPoint.x), static_cast<int>(endPoint.y),
+			static_cast<unsigned int>(color));
+	}
+
+#ifdef _DEBUG
+	Sphere controlPoints[3]{};
+	controlPoints[0].center = v1;
+	controlPoints[1].center = v2;
+	controlPoints[2].center = v3;
+	for (int32_t index = 0; index < 3; ++index) {
+		controlPoints[index].radius = 0.01f;
+		controlPoints[index].subdivision = 16;
+
+		DrawSphere(controlPoints[index], viewProjectionMatrix, viewportMatrix, BLACK);
+	}
+#endif
+}
+
 int ColisionSphere(const Sphere& sphere1, const Sphere& sphere2) {
 	if ((sphere1.center - sphere2.center).Length() <= sphere1.radius + sphere2.radius) {
 		return true;
@@ -549,7 +575,7 @@ int isCollision(const OBB& obb, const Sphere& sphere) {
 	Vector3 centerInOBBLocalSpace = Vector3::Transform(sphere.center, obbWorldMatrixInvers);
 
 	AABB aabbOBBLocal{ -obb.size,obb.size };
-	Sphere sphereOBBLocal{ centerInOBBLocalSpace ,sphere.radius,16,WHITE };
+	Sphere sphereOBBLocal{ centerInOBBLocalSpace ,sphere.radius,16};
 	return isCollision(aabbOBBLocal,sphereOBBLocal);
 }
 
