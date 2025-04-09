@@ -121,3 +121,4 @@ int isCollision(const AABB& aabb, const Sphere& sphere);
 int isCollision(const AABB& aabb, const Segment& segment);
 int isCollision(const OBB& obb, const Sphere& sphere);
 int isCollision(const OBB& obb, const Segment& segment);
+int isCollision(const OBB& obb1, const OBB& obb2);
