@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_3次元衝突判定_面と球";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_曲線再び";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -24,21 +24,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Segment segment{ {1.0f,0.0f,0.0f},{0.5f,0.5f,0.0f} };
-	unsigned int hitColor = WHITE;
-	Vector3 rotate{};
-	OBB obb = {
-		{-1.0f,0.0f,0.0f},
-		{{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f}},
-		{0.5f,0.5f,0.5f}
-	};
-
-	Vector3 rotate1{};
-	OBB obb1 = {
-		{1.0f,1.0f,0.0f},
-		{{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f}},
-		{0.5f,0.5f,0.5f}
-	};
+	Vector3 controlPoints[3]{};
+	controlPoints[0] = { -0.8f,0.58f,1.0f };
+	controlPoints[1] = { -1.76f,1.0f,-0.3f };
+	controlPoints[2] = { 0.94f,-0.7f,2.3f };
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -114,28 +103,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = Matrix4x4::MakeViewportMatrix(0, 0, static_cast<float>(kWindowWidth), static_cast<float>(kWindowHeight), 0.0f, 1.0f);
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
-		// OBBの軸生成
-		Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateXYZMatrix(rotate);
-		for (int32_t index = 0; index < 3; ++index) {
-			obb.orientations[index].x = rotateMatrix.m[index][0];
-			obb.orientations[index].y = rotateMatrix.m[index][1];
-			obb.orientations[index].z = rotateMatrix.m[index][2];
-		}
-
-		rotateMatrix = Matrix4x4::MakeRotateXYZMatrix(rotate1);
-		for (int32_t index = 0; index < 3; ++index) {
-			obb1.orientations[index].x = rotateMatrix.m[index][0];
-			obb1.orientations[index].y = rotateMatrix.m[index][1];
-			obb1.orientations[index].z = rotateMatrix.m[index][2];
-		}
-
-		// 当たり判定
-		if (isCollision(obb, obb1)) {
-			hitColor = RED;
-		} else {
-			hitColor = WHITE;
-		}
-
 		// ImGui
 		ImGui::Begin("OpWindow");
 		if (ImGui::TreeNode("Camera")) {
@@ -164,13 +131,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
-		ImGui::DragFloat3("ObbCenter", &obb.center.x, 0.01f);
-		ImGui::DragFloat3("ObbRotate", &rotate.x, 0.01f);
-		ImGui::DragFloat3("ObbSize", &obb.size.x, 0.01f);
 
-		ImGui::DragFloat3("Obb1Center", &obb1.center.x, 0.01f);
-		ImGui::DragFloat3("Obb1Rotate", &rotate1.x, 0.01f);
-		ImGui::DragFloat3("Obb1Size", &obb1.size.x, 0.01f);
+		ImGui::DragFloat3("controlPoint[0]", &controlPoints[0].x, 0.01f);
+		ImGui::DragFloat3("controlPoint[1]", &controlPoints[1].x, 0.01f);
+		ImGui::DragFloat3("controlPoint[2]", &controlPoints[2].x, 0.01f);
 
 		ImGui::End();
 
@@ -183,8 +147,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawOBB(obb, viewProjectionMatrix, viewportMatrix, hitColor);
-		DrawOBB(obb1, viewProjectionMatrix, viewportMatrix, hitColor);
+		DrawBezier(controlPoints[0], controlPoints[1], controlPoints[2], viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);

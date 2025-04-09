@@ -64,6 +64,25 @@ public:
 	/// <returns>2つの3次元ベクトルの外積</returns>
 	[[nodiscard]] static Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
+	/// <summary>
+	/// 線形補完を求める
+	/// </summary>
+	/// <param name="v1">1つ目の3次元ベクトル(t=0)</param>
+	/// <param name="v2">2つ目の3次元ベクトル(t=1)</param>
+	/// <param name="t">補間に使用する値(0~1)</param>
+	/// <returns>線形補完</returns>
+	[[nodiscard]] static Vector3 Lerp(const Vector3& v1, const Vector3& v2,float t);
+
+	/// <summary>
+	/// ベジェ曲線を求める
+	/// </summary>
+	/// <param name="p0">始点</param>
+	/// <param name="p1">制御点</param>
+	/// <param name="p2">終点</param>
+	/// <param name="t">媒介変数</param>
+	/// <returns>ベジェ曲線</returns>
+	[[nodiscard]] static Vector3 BezierCurve(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t);
+
 public:
 	/// <summary>
 	/// ワールド座標に変換する

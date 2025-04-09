@@ -44,6 +44,22 @@ Vector3 Vector3::Cross(const Vector3& v1, const Vector3& v2) {
     return result;
 }
 
+Vector3 Vector3::Lerp(const Vector3& v1, const Vector3& v2, float t) {
+    Vector3 result{};
+    result.x = v1.x * (1.0f - t) + v2.x * t;
+    result.y = v1.y * (1.0f - t) + v2.y * t;
+    result.z = v1.z * (1.0f - t) + v2.z * t;
+    return result;
+}
+
+Vector3 Vector3::BezierCurve(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t) {
+    Vector3 result{};
+    Vector3 p0p1 = Lerp(p0, p1, t);
+    Vector3 p1p2 = Lerp(p1, p2, t);
+    result = Lerp(p0p1, p1p2, t);
+    return result;
+}
+
 Vector3 Vector3::Transform(const Vector3& vector, const Matrix4x4& matrix) {
     Vector3 result = {};
     
