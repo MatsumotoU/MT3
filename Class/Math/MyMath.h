@@ -60,6 +60,24 @@ struct Segment
 	Vector3 diff; //!< 終点への差分ベクトル
 };
 
+struct Spring
+{
+	Vector3 anchor;
+	float naturalLength;
+	float stiffness;// 剛性
+	float dampingCoefficient;// 減衰係数
+};
+
+struct Ball
+{
+	Vector3 position;
+	Vector3 velocity;
+	Vector3 acceleration;
+	float mass;
+	float radius;
+	unsigned int color;
+};
+
 
 /// <summary>
 /// 最近接点を求める

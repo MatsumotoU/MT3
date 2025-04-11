@@ -3,7 +3,7 @@
 #include <string>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_曲線再び";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_ばねを作ってみよう";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -25,16 +25,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Vector3 a{ 0.2f,1.0f,0.0f };
-	Vector3 b{ 2.4f,3.1f,1.2f };
-	Vector3 c = a + b;
-	Vector3 d = a - b;
-	Vector3 e = a * 2.4f;
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
-	Matrix4x4 rotateXMatrix = Matrix4x4::MakeRotateXMatrix(rotate.x);
-	Matrix4x4 rotateYMatrix = Matrix4x4::MakeRotateYMatrix(rotate.y);
-	Matrix4x4 rotateZMatrix = Matrix4x4::MakeRotateZMatrix(rotate.z);
-	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
+	Spring spring{};
+	spring.anchor = { 0.0f,0.0f,0.0f };
+	spring.naturalLength = 1.0f;
+	spring.stiffness = 100.0f;
+	spring.dampingCoefficient = 2.0f;
+
+	Ball ball{};
+	ball.position = { 1.2f,0.0f,0.0f };
+	ball.mass = 2.0f;
+	ball.radius = 0.05f;
+	ball.color = BLUE;
+
+	bool isSimulate = false;
+	float deltaTime = 1.0f / 60.0f;
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -111,7 +115,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// オブジェクト操作
-		
+		if (isSimulate) {
+			Vector3 diff = ball.position - spring.anchor;
+			float length = diff.Length();
+			if (length != 0.0f) {
+				Vector3 direction = Vector3::Normalize(diff);
+				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
+				Vector3 displacement = (ball.position - restPosition) * length;
+				Vector3 restoringForce = displacement * -spring.stiffness;
+				Vector3 dampingForce = ball.velocity * -spring.dampingCoefficient;
+				Vector3 force = restoringForce + dampingForce;
+				ball.acceleration = force / ball.mass;
+			}
+			ball.velocity += ball.acceleration * deltaTime;
+			ball.position += ball.velocity * deltaTime;
+		}
 
 		// ImGui
 		ImGui::Begin("OpWindow");
@@ -142,15 +160,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// オブジェクトの情報
 		ImGui::Begin("ObjectWindow");
 
-		ImGui::Text("c:%f, %f, %f", c.x, c.y, c.z);
-		ImGui::Text("d:%f, %f, %f", d.x, d.y, d.z);
-		ImGui::Text("e:%f, %f, %f", e.x, e.y, e.z);
-		ImGui::Text("Matrix:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", 
-			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
-			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3], 
-			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3], 
-			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
+		if (ImGui::Button("Start")) {
+			isSimulate = true;
+		}
 
+		ImGui::DragFloat3("ballPos", &ball.position.x,0.1f);
+		ImGui::DragFloat3("ballVel", &ball.velocity.x, 0.1f);
+		ImGui::DragFloat3("ballAcc", &ball.acceleration.x, 0.1f);
+		ImGui::DragFloat("ballMass", &ball.mass, 0.1f);
+
+		ImGui::DragFloat3("springAnchor", &spring.anchor.x, 0.1f);
+		ImGui::DragFloat("springNaturalLengthr", &spring.naturalLength, 0.1f);
+		ImGui::DragFloat("springStiffness", &spring.stiffness, 0.1f);
+		ImGui::DragFloat("springDampingCoefficient", &spring.dampingCoefficient, 0.1f);
+		
 		ImGui::End();
 
 		///
@@ -162,6 +185,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
+
+		Segment segment{};
+		segment.origin = spring.anchor;
+		segment.diff = ball.position - spring.anchor;
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
+
+		Sphere sphere{};
+		sphere.center = ball.position;
+		sphere.radius = 0.1f;
+		sphere.subdivision = 16;
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, ball.color);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
