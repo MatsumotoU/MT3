@@ -25,20 +25,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Spring spring{};
-	spring.anchor = { 0.0f,0.0f,0.0f };
-	spring.naturalLength = 1.0f;
-	spring.stiffness = 100.0f;
-	spring.dampingCoefficient = 2.0f;
-
+	float r = 0.8f;
 	Ball ball{};
-	ball.position = { 1.2f,0.0f,0.0f };
+	ball.position = { r,0.0f,0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
-	ball.color = BLUE;
+	ball.color = WHITE;
+	
+	Vector3 c{};
+	Vector3 p{};
+	Vector3 v{};
+	Vector3 a{};
 
-	bool isSimulate = false;
+	int isSimulate = false;
 	float deltaTime = 1.0f / 60.0f;
+	float angularVelocity = 3.14f;
+	float angle = 0.0;
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -116,17 +118,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクト操作
 		if (isSimulate) {
-			Vector3 diff = ball.position - spring.anchor;
-			float length = diff.Length();
-			if (length != 0.0f) {
-				Vector3 direction = Vector3::Normalize(diff);
-				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
-				Vector3 displacement = (ball.position - restPosition) * length;
-				Vector3 restoringForce = displacement * -spring.stiffness;
-				Vector3 dampingForce = ball.velocity * -spring.dampingCoefficient;
-				Vector3 force = restoringForce + dampingForce;
-				ball.acceleration = force / ball.mass;
-			}
+			angle += angularVelocity / 60.0f;
+			p.x = c.x + std::cos(angle) * r;
+			p.y = c.y + std::sin(angle) * r;
+			p.z = c.z;
+
+			v = { -r * angularVelocity * std::sin(angle), r * angularVelocity * std::cos(angle),0.0f };
+			a = (p - c) * -pow(angularVelocity, 2.0f);
+			
+			ball.velocity = v;
+			ball.acceleration = a;
+
 			ball.velocity += ball.acceleration * deltaTime;
 			ball.position += ball.velocity * deltaTime;
 		}
@@ -168,11 +170,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("ballVel", &ball.velocity.x, 0.1f);
 		ImGui::DragFloat3("ballAcc", &ball.acceleration.x, 0.1f);
 		ImGui::DragFloat("ballMass", &ball.mass, 0.1f);
-
-		ImGui::DragFloat3("springAnchor", &spring.anchor.x, 0.1f);
-		ImGui::DragFloat("springNaturalLengthr", &spring.naturalLength, 0.1f);
-		ImGui::DragFloat("springStiffness", &spring.stiffness, 0.1f);
-		ImGui::DragFloat("springDampingCoefficient", &spring.dampingCoefficient, 0.1f);
 		
 		ImGui::End();
 
@@ -186,10 +183,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		Segment segment{};
+		/*Segment segment{};
 		segment.origin = spring.anchor;
 		segment.diff = ball.position - spring.anchor;
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);*/
 
 		Sphere sphere{};
 		sphere.center = ball.position;
