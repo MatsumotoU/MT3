@@ -3,7 +3,7 @@
 #include <string>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_ばねを作ってみよう";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_振り子を作ってみよう";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -25,9 +25,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	float r = 0.8f;
+	Pendulm pendulm{};
+	pendulm.anchor = { 0.0f,1.0f,0.0f };
+	pendulm.length = 0.8f;
+	pendulm.angle = 0.7f;
+	pendulm.angularVelocity = 0.0f;
+	pendulm.angularAcceleration = 0.0f;
+
 	Ball ball{};
-	ball.position = { r,0.0f,0.0f };
+	ball.position = { 0.0f,0.0f,0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = WHITE;
@@ -39,8 +45,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int isSimulate = false;
 	float deltaTime = 1.0f / 60.0f;
-	float angularVelocity = 3.14f;
-	float angle = 0.0;
 
 	// マウス操作用
 	Vector3 cursorTranslate{};
@@ -118,19 +122,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクト操作
 		if (isSimulate) {
-			angle += angularVelocity / 60.0f;
-			p.x = c.x + std::cos(angle) * r;
-			p.y = c.y + std::sin(angle) * r;
-			p.z = c.z;
+			pendulm.angularAcceleration = -(9.8f / pendulm.length) * std::sin(pendulm.angle);
+			pendulm.angularVelocity += pendulm.angularAcceleration * deltaTime;
+			pendulm.angle += pendulm.angularVelocity * deltaTime;
+			//angle += angularVelocity / 60.0f;
+			p.x = pendulm.anchor.x + std::sin(pendulm.angle) * pendulm.length;
+			p.y = pendulm.anchor.y - std::cos(pendulm.angle) * pendulm.length;
+			p.z = pendulm.anchor.z;
 
-			v = { -r * angularVelocity * std::sin(angle), r * angularVelocity * std::cos(angle),0.0f };
-			a = (p - c) * -pow(angularVelocity, 2.0f);
-			
-			ball.velocity = v;
+			v = { -pendulm.length * pendulm.angularVelocity * std::sin(pendulm.angle), pendulm.length * pendulm.angularVelocity * std::cos(pendulm.angle),0.0f };
+			a = (p - pendulm.anchor) * -pow(pendulm.angularVelocity, 2.0f);
+
+			ball.position = p;
+
+			/*ball.velocity = v;
 			ball.acceleration = a;
 
 			ball.velocity += ball.acceleration * deltaTime;
-			ball.position += ball.velocity * deltaTime;
+			ball.position += ball.velocity * deltaTime;*/
 		}
 
 		// ImGui
@@ -166,6 +175,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			isSimulate = true;
 		}
 
+		if (ImGui::Button("StepSimulate")) {
+			
+		}
+
 		ImGui::DragFloat3("ballPos", &ball.position.x,0.1f);
 		ImGui::DragFloat3("ballVel", &ball.velocity.x, 0.1f);
 		ImGui::DragFloat3("ballAcc", &ball.acceleration.x, 0.1f);
@@ -183,10 +196,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		/*Segment segment{};
-		segment.origin = spring.anchor;
-		segment.diff = ball.position - spring.anchor;
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);*/
+		Segment segment{};
+		segment.origin = pendulm.anchor;
+		segment.diff = ball.position - pendulm.anchor;
+		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		Sphere sphere{};
 		sphere.center = ball.position;
