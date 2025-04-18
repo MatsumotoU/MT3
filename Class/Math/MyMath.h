@@ -78,6 +78,15 @@ struct Ball
 	unsigned int color;
 };
 
+struct Pendulm
+{
+	Vector3 anchor;
+	float length;
+	float angle;
+	float angularVelocity;
+	float angularAcceleration;
+};
+
 
 /// <summary>
 /// 最近接点を求める
