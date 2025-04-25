@@ -88,6 +88,26 @@ public:
 
 public:
 	/// <summary>
+	/// アフィン行列から移動量を取り出します
+	/// </summary>
+	/// <param name="affineMatrix">対象のアフィン行列</param>
+	/// <returns>移動量</returns>
+	[[nodiscard]] static Vector3 GetTransitionFormAffineMatrix(const Matrix4x4& affineMatrix);
+	/// <summary>
+	/// アフィン行列から回転量を取り出します
+	/// </summary>
+	/// <param name="affineMatrix">対象のアフィン行列</param>
+	/// <returns>回転量</returns>
+	[[nodiscard]] static Vector3 GetRotateFormAffineMatrix(const Matrix4x4& affineMatrix);
+	/// <summary>
+	/// アフィン行列から拡縮を取り出します
+	/// </summary>
+	/// <param name="affineMatrix">対象のアフィン行列</param>
+	/// <returns>拡縮</returns>
+	[[nodiscard]] static Vector3 GetScaleFormAffineMatrix(const Matrix4x4& affineMatrix);
+
+public:
+	/// <summary>
 	/// ワールド座標に変換する
 	/// </summary>
 	/// <param name="vector">変換元ローカル座標</param>
