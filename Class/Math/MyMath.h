@@ -87,6 +87,14 @@ struct Pendulm
 	float angularAcceleration;
 };
 
+struct ConicalPendulm
+{
+	Vector3 anchor;
+	float length;
+	float halfApexAngle;
+	float angle;
+	float angularVelocity;
+};
 
 /// <summary>
 /// 最近接点を求める

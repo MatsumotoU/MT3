@@ -104,6 +104,37 @@ Vector3 Vector3::CatmullRom(const std::vector<Vector3>& controlPoints, float t) 
     return result;
 }
 
+Vector3 Vector3::GetTransitionFormAffineMatrix(const Matrix4x4& affineMatrix) {
+    Vector3 result{};
+    result.x = affineMatrix.m[3][0];
+    result.y = affineMatrix.m[3][1];
+    result.z = affineMatrix.m[3][2];
+    return result;
+}
+
+Vector3 Vector3::GetRotateFormAffineMatrix(const Matrix4x4& affineMatrix) {
+    Vector3 result{};
+    affineMatrix;
+    /*Vector3 y0x012 = { affineMatrix.m[0][0],affineMatrix.m[0][1] ,affineMatrix.m[0][2] };
+    Vector3 y1x012 = { affineMatrix.m[1][0],affineMatrix.m[1][1] ,affineMatrix.m[1][2] };
+    Vector3 y2x012 = { affineMatrix.m[2][0],affineMatrix.m[2][1] ,affineMatrix.m[2][2] };
+    float k = y0x012.Length();
+    float l = y1x012.Length();
+    float m = y2x012.Length();
+    result.x = affineMatrix.m[3][0];
+    result.y = affineMatrix.m[3][1];
+    result.z = affineMatrix.m[3][2];*/
+    return result;
+}
+
+Vector3 Vector3::GetScaleFormAffineMatrix(const Matrix4x4& affineMatrix) {
+    Vector3 result{};
+    result.x = affineMatrix.m[3][0];
+    result.y = affineMatrix.m[3][1];
+    result.z = affineMatrix.m[3][2];
+    return result;
+}
+
 Vector3 Vector3::Transform(const Vector3& vector, const Matrix4x4& matrix) {
     Vector3 result = {};
     

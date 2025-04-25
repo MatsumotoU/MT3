@@ -3,7 +3,7 @@
 #include <string>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_振り子を作ってみよう";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_円錐振り子を作ってみよう";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -31,6 +31,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	pendulm.angle = 0.7f;
 	pendulm.angularVelocity = 0.0f;
 	pendulm.angularAcceleration = 0.0f;
+
+	ConicalPendulm conicalPendulm{};
+	conicalPendulm.anchor = { 0.0f,1.0f,0.0f };
+	conicalPendulm.length = 0.8f;
+	conicalPendulm.halfApexAngle = 0.7f;
+	conicalPendulm.angle = 0.0f;
+	conicalPendulm.angularVelocity = 0.0f;
 
 	Ball ball{};
 	ball.position = { 0.0f,0.0f,0.0f };
@@ -122,18 +129,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// オブジェクト操作
 		if (isSimulate) {
-			pendulm.angularAcceleration = -(9.8f / pendulm.length) * std::sin(pendulm.angle);
-			pendulm.angularVelocity += pendulm.angularAcceleration * deltaTime;
-			pendulm.angle += pendulm.angularVelocity * deltaTime;
-			//angle += angularVelocity / 60.0f;
-			p.x = pendulm.anchor.x + std::sin(pendulm.angle) * pendulm.length;
-			p.y = pendulm.anchor.y - std::cos(pendulm.angle) * pendulm.length;
-			p.z = pendulm.anchor.z;
+			conicalPendulm.angularVelocity = std::sqrtf(9.8f / (conicalPendulm.length * std::cos(conicalPendulm.halfApexAngle)));
+			conicalPendulm.angle += conicalPendulm.angularVelocity * deltaTime;
 
-			v = { -pendulm.length * pendulm.angularVelocity * std::sin(pendulm.angle), pendulm.length * pendulm.angularVelocity * std::cos(pendulm.angle),0.0f };
-			a = (p - pendulm.anchor) * -pow(pendulm.angularVelocity, 2.0f);
+			float radius = std::sin(conicalPendulm.halfApexAngle) * conicalPendulm.length;
+			float height = std::cos(conicalPendulm.halfApexAngle) * conicalPendulm.length;
+			ball.position.x = conicalPendulm.anchor.x + std::cos(conicalPendulm.angle) * radius;
+			ball.position.y = conicalPendulm.anchor.y - height;
+			ball.position.z = conicalPendulm.anchor.z - std::sin(conicalPendulm.angle) * radius;
 
-			ball.position = p;
+			//pendulm.angularAcceleration = -(9.8f / pendulm.length) * std::sin(pendulm.angle);
+			//pendulm.angularVelocity += pendulm.angularAcceleration * deltaTime;
+			//pendulm.angle += pendulm.angularVelocity * deltaTime;
+			////angle += angularVelocity / 60.0f;
+			//p.x = pendulm.anchor.x + std::sin(pendulm.angle) * pendulm.length;
+			//p.y = pendulm.anchor.y - std::cos(pendulm.angle) * pendulm.length;
+			//p.z = pendulm.anchor.z;
+
+			//v = { -pendulm.length * pendulm.angularVelocity * std::sin(pendulm.angle), pendulm.length * pendulm.angularVelocity * std::cos(pendulm.angle),0.0f };
+			//a = (p - pendulm.anchor) * -pow(pendulm.angularVelocity, 2.0f);
+
+			//ball.position = p;
 
 			/*ball.velocity = v;
 			ball.acceleration = a;
@@ -197,8 +213,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
 		Segment segment{};
-		segment.origin = pendulm.anchor;
-		segment.diff = ball.position - pendulm.anchor;
+		segment.origin = conicalPendulm.anchor;
+		segment.diff = ball.position - conicalPendulm.anchor;
 		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		Sphere sphere{};
