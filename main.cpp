@@ -3,7 +3,7 @@
 #include <string>
 #include "Class/Math/MyMath.h"
 
-const char kWindowTitle[] = "LE2A_14_マツモトユウタ_円錐振り子を作ってみよう";
+const char kWindowTitle[] = "LE2A_14_マツモトユウタ_平面にボールを落としてみよう";
 
 const int kRowHeight = 22;
 const int kColumnWidth = 60;
@@ -25,25 +25,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
 	// 図形
-	Pendulm pendulm{};
-	pendulm.anchor = { 0.0f,1.0f,0.0f };
-	pendulm.length = 0.8f;
-	pendulm.angle = 0.7f;
-	pendulm.angularVelocity = 0.0f;
-	pendulm.angularAcceleration = 0.0f;
-
-	ConicalPendulm conicalPendulm{};
-	conicalPendulm.anchor = { 0.0f,1.0f,0.0f };
-	conicalPendulm.length = 0.8f;
-	conicalPendulm.halfApexAngle = 0.7f;
-	conicalPendulm.angle = 0.0f;
-	conicalPendulm.angularVelocity = 0.0f;
-
 	Ball ball{};
-	ball.position = { 0.0f,0.0f,0.0f };
+	ball.position = { 0.0f,1.0f,0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = WHITE;
+	ball.acceleration = { 0.0f,-9.8f,0.0f };
+
+	Capsule capsule{};
+	capsule.segment.origin = ball.position;
+	capsule.radius;
+	Vector3 preBallPosition{};
+
+	Plane plane{};
+	plane.distance = 0.3f;
+	plane.normal = { 0.1f,1.0f,0.1f };
+	plane.normal = plane.normal.Normalize();
 	
 	Vector3 c{};
 	Vector3 p{};
@@ -128,34 +125,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Matrix4x4::Multiply(viewMatrix, projectionMatrix);
 
 		// オブジェクト操作
+		float e = 0.98f;
 		if (isSimulate) {
-			conicalPendulm.angularVelocity = std::sqrtf(9.8f / (conicalPendulm.length * std::cos(conicalPendulm.halfApexAngle)));
-			conicalPendulm.angle += conicalPendulm.angularVelocity * deltaTime;
-
-			float radius = std::sin(conicalPendulm.halfApexAngle) * conicalPendulm.length;
-			float height = std::cos(conicalPendulm.halfApexAngle) * conicalPendulm.length;
-			ball.position.x = conicalPendulm.anchor.x + std::cos(conicalPendulm.angle) * radius;
-			ball.position.y = conicalPendulm.anchor.y - height;
-			ball.position.z = conicalPendulm.anchor.z - std::sin(conicalPendulm.angle) * radius;
-
-			//pendulm.angularAcceleration = -(9.8f / pendulm.length) * std::sin(pendulm.angle);
-			//pendulm.angularVelocity += pendulm.angularAcceleration * deltaTime;
-			//pendulm.angle += pendulm.angularVelocity * deltaTime;
-			////angle += angularVelocity / 60.0f;
-			//p.x = pendulm.anchor.x + std::sin(pendulm.angle) * pendulm.length;
-			//p.y = pendulm.anchor.y - std::cos(pendulm.angle) * pendulm.length;
-			//p.z = pendulm.anchor.z;
-
-			//v = { -pendulm.length * pendulm.angularVelocity * std::sin(pendulm.angle), pendulm.length * pendulm.angularVelocity * std::cos(pendulm.angle),0.0f };
-			//a = (p - pendulm.anchor) * -pow(pendulm.angularVelocity, 2.0f);
-
-			//ball.position = p;
-
-			/*ball.velocity = v;
-			ball.acceleration = a;
-
+			preBallPosition = ball.position;
 			ball.velocity += ball.acceleration * deltaTime;
-			ball.position += ball.velocity * deltaTime;*/
+			ball.position += ball.velocity * deltaTime;
+			capsule.segment.origin = ball.position;
+
+			capsule.segment.diff = preBallPosition - capsule.segment.origin;
+			if (isCollision(Sphere(ball.position, ball.radius), plane)) {
+
+				Vector3 reflected = Reflect(ball.velocity, plane.normal);
+				Vector3 projectToNormal = Vector3::Project(reflected, plane.normal);
+				Vector3 movingDirection = reflected - projectToNormal;
+				ball.velocity = projectToNormal * e + movingDirection;
+			} else {
+				if (isCollision(capsule.segment, plane)) {
+
+					Vector3 reflected = Reflect(ball.velocity, plane.normal);
+					Vector3 projectToNormal = Vector3::Project(reflected, plane.normal);
+					Vector3 movingDirection = reflected - projectToNormal;
+					ball.velocity = projectToNormal * e + movingDirection;
+				}
+			}
 		}
 
 		// ImGui
@@ -199,6 +191,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("ballVel", &ball.velocity.x, 0.1f);
 		ImGui::DragFloat3("ballAcc", &ball.acceleration.x, 0.1f);
 		ImGui::DragFloat("ballMass", &ball.mass, 0.1f);
+
+		ImGui::DragFloat3("Plane", &plane.normal.x, 0.1f);
+		plane.normal = plane.normal.Normalize();
 		
 		ImGui::End();
 
@@ -212,16 +207,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		Segment segment{};
-		segment.origin = conicalPendulm.anchor;
-		segment.diff = ball.position - conicalPendulm.anchor;
-		DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
-
 		Sphere sphere{};
 		sphere.center = ball.position;
 		sphere.radius = 0.1f;
 		sphere.subdivision = 16;
 		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, ball.color);
+
+		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
+
+		//DrawSegment(capsule.segment, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		if (isActiveAxis) {
 			DrawAxis(static_cast<int>(axisTranslate.x), static_cast<int>(axisTranslate.y), axisSize, cursorRotate + cameraRotate);
