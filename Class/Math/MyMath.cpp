@@ -10,6 +10,12 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment) {
 	return result;
 }
 
+Vector3 Reflect(const Vector3& input, const Vector3& normal) {
+	Vector3 r{};
+	r = input - (normal * Vector3::Dot(input, normal)) * 2.0f;
+	return r;
+}
+
 unsigned int ColorFade(unsigned int color, float alpha) {
 
 	unsigned int maskColor = 0xFFFFFF00 & color;
@@ -498,6 +504,14 @@ int isCollision(const Segment& segment, const Triangle& triangle) {
 		Vector3::Dot(cross12, plane.normal) >= 0.0f &&
 		Vector3::Dot(cross20, plane.normal) >= 0.0f) {
 
+		return true;
+	}
+	return false;
+}
+
+int isCollision(const Sphere& sphere, const Plane& plane) {
+	float length = fabsf(Vector3::Dot(plane.normal, sphere.center) - (plane.normal * plane.distance).Length());
+	if (length <= sphere.radius) {
 		return true;
 	}
 	return false;

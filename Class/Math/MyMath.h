@@ -60,6 +60,13 @@ struct Segment
 	Vector3 diff; //!< 終点への差分ベクトル
 };
 
+struct Capsule
+{
+	Segment segment;
+	float radius;
+};
+
+
 struct Spring
 {
 	Vector3 anchor;
@@ -103,6 +110,8 @@ struct ConicalPendulm
 /// <param name="segment">対象とする線分</param>
 /// <returns>最近接点</returns>
 [[nodiscard]] Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+
+[[nodiscard]] Vector3 Reflect(const Vector3& input, const Vector3& normal);
 
 unsigned int ColorFade(unsigned int color, float alpha);
 
@@ -152,6 +161,7 @@ int ColisionPlaneToSphere(const Plane& plane, const Sphere& sphere);
 
 int isCollision(const Segment& segment, const Plane& plane);
 int isCollision(const Segment& segment, const Triangle& triangle);
+int isCollision(const Sphere& sphere, const Plane& plane);
 int isCollision(const AABB& aabb1, const AABB& aabb2);
 int isCollision(const AABB& aabb, const Sphere& sphere);
 int isCollision(const AABB& aabb, const Segment& segment);
